@@ -1,85 +1,85 @@
 const mongoose = require("mongoose");
 
- const userSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
 
-    name:{
+    name: {
 
-        type:String,
-        trim:true,
-
-    },
-
-    email:{
-
-        type:String ,
-
-        trim:true,
+        type: String,
+        trim: true,
 
     },
 
-    followers:[{
+    email: {
 
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"User"
+        type: String,
+
+        trim: true,
+
+    },
+
+    followers: [{
+
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
 
 
     }],
 
-    following:[{
+    following: [{
 
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"User"
-
-    }],
-
-    posts:[{
-
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Post"
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
 
     }],
 
-    addtionalDetails:{
+    posts: [{
 
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"AdditionalDetails"
-
-    },
-
-    BookMarks:[{
-
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Post"
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Post"
 
     }],
 
-    userImage:{
+    addtionalDetails: {
 
-        type:String,
-
-    },
-
-    password:{
-
-        type:String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "AdditionalDetails"
 
     },
 
-    isVerified:{
+    BookMarks: [{
 
-        type:Boolean,
-        default:true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Post"
+
+    }],
+
+    userImage: {
+
+        type: String,
+
     },
-    
+
+    password: {
+
+        type: String,
+
+    },
+
+    isVerified: {
+
+        type: Boolean,
+        default:false
+    },
 
 
- },{
 
-    timestamps:true,
-    
- })
+}, {
+
+    timestamps: true,
+
+})
 
 
-module.exports = mongoose.model("User",userSchema);
+module.exports = mongoose.model("User", userSchema);
 
 
