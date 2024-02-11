@@ -1,5 +1,10 @@
 const mongoose = require("mongoose");
 
+
+require("dotenv").config();
+
+const jwt = require("jsonwebtoken");
+
 const userSchema = new mongoose.Schema({
 
     name: {
@@ -28,28 +33,32 @@ const userSchema = new mongoose.Schema({
     following: [{
 
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
+        ref: "User",
+        trim:true,
 
     }],
 
     posts: [{
 
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Post"
+        ref: "Post",
+        trim:true,
 
     }],
 
     addtionalDetails: {
 
         type: mongoose.Schema.Types.ObjectId,
-        ref: "AdditionalDetails"
+        ref: "AdditionalDetails",
+        trim:true,
 
     },
 
     BookMarks: [{
 
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Post"
+        ref: "Post",
+        trim:true,
 
     }],
 
@@ -71,7 +80,10 @@ const userSchema = new mongoose.Schema({
         default:false
     },
 
+    refreshToken:{
 
+        type:String
+    }
 
 }, {
 
@@ -80,6 +92,41 @@ const userSchema = new mongoose.Schema({
 })
 
 
+userSchema.methods.generateAccessToken = function(){
+
+    return jwt.sign({
+        
+        _id:this._id,
+        email:this.email,
+        userName:this.name
+
+    },process.env.JWT_ACCESS_TOKEN,{
+
+        expiresIn:"24h"
+
+    })
+
+}
+
+
+userSchema.methods.generateRefreshToken = function(){
+
+    return jwt.sign({
+        
+        _id:this._id,
+
+    },process.env.JWT_REFRESH_TOKEN,{
+
+        expiresIn:"30d"
+
+    })
+    
+}
+
 module.exports = mongoose.model("User", userSchema);
+
+
+
+
 
 

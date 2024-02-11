@@ -2,6 +2,12 @@ const mongoose = require("mongoose");
 
 const PostSchema = mongoose.Schema({
 
+    user:{
+
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"User"
+
+    },
     postUrl:{
 
         type:String,
@@ -12,6 +18,11 @@ const PostSchema = mongoose.Schema({
 
         type:String,
 
+    },
+
+    timeDuration:{
+
+        type:String,
     },
 
     likes:[{

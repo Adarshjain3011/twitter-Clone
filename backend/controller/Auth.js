@@ -1,3 +1,4 @@
+
 const Otp = require("../model/Otp");
 
 const User = require("../model/User");
@@ -6,23 +7,23 @@ const bcrypt = require("bcrypt");
 
 const otpGenerator = require("otp-generator");
 
+
+// const sendMail = require("../utils/MailSender");
+
+const jwt = require("jsonwebtoken");
+
+const cookie = require("cookie");
+
 const { sendMail } = require("../utils/MailSender");
 
-const jwt = requi
 
-// exports.randomOtp = ()=>{
-
-//     return otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false });
-
-// }
-
-exports.sendOtp = async (emailt) => {
+exports.sendOtp = async (email) => {
 
     try {
 
-        const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false });
+        const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false ,lowerCaseAlphabets:false });
 
-        const mailResponse = await sendMail(email, " successfully sent verification otp ", otp);
+        const mailResponse = await sendMail(email, "successfully sent verification otp ", otp);
 
         console.log("mail send successfully ", mailResponse);
 
@@ -31,6 +32,8 @@ exports.sendOtp = async (emailt) => {
             email, otp
 
         });
+
+        console.log("createOtp",createOtp);
 
         if (createOtp) {
 
@@ -64,7 +67,7 @@ exports.VerifyOtp = async (req, res) => {
 
         const { otp, email } = req.body;
 
-
+        console.log(otp,email);
         // validate the data 
 
         if (!otp || !email) {
@@ -72,7 +75,6 @@ exports.VerifyOtp = async (req, res) => {
             return res.status(400).json({
 
                 success: false,
-
                 data: null,
                 message: "all fields are not fullfilled ",
 
@@ -85,10 +87,11 @@ exports.VerifyOtp = async (req, res) => {
 
         const mostRecent = await Otp.find({ email: email }).sort({ createdAt: -1 }).limit(1);
 
+        console.log("most recent",mostRecent);
+
         if (!mostRecent) {
 
-
-
+            console.log("1");
             return res.status(400).json({
 
                 success: false,
@@ -104,8 +107,11 @@ exports.VerifyOtp = async (req, res) => {
 
         // verfify the otp 
 
-        if (otp !== mostRecent.otp) {
+        console.log(otp,mostRecent[0].otp);
 
+        if (otp !== mostRecent[0].otp) {
+
+            console.log("1.1");
             return res.status(400).json({
 
                 success: false,
@@ -181,7 +187,6 @@ exports.signUp = async (req, res) => {
 
                 success: false,
                 data: null,
-
                 message: "this email is already exists  "
 
             })
@@ -205,8 +210,6 @@ exports.signUp = async (req, res) => {
 
         const createOtp = await this.sendOtp(email);
 
-
-
         const createUser = await User.create({
 
             name: name,
@@ -222,8 +225,9 @@ exports.signUp = async (req, res) => {
         return res.status(200).json({
 
             success: true,
-            message: "user entry in DB Successfully "
-
+            data:createUser,
+            message: "user entry in DB Successfully ",
+            
         })
 
 
@@ -245,6 +249,60 @@ exports.signUp = async (req, res) => {
 }
 
 
+
+const options = {
+
+    httpOnly:true,
+    secure:true,
+    expiresIn:new Date()+24*60*60*1000,
+
+}
+
+
+
+const generateRefreshAndAccessToken = async(userId)=>{
+
+
+
+    try{
+
+        // validate 
+
+        if(!userId){
+
+            return false;
+        }
+
+
+        const userExists = await User.findById(userId);
+
+
+        if(!userExists){
+
+            return false;
+
+        }
+
+        const accessToken = userExists.generateAccessToken();
+
+        const refreshToken = userExists.generateRefreshToken();
+
+        userExists.refreshToken = refreshToken;
+
+        await userExists.save({validateBeforeSave:false});
+
+        return { accessToken,refreshToken };
+
+
+    }
+
+    catch(error){
+
+        console.log(error);
+
+        return false;
+    }
+}
 
 
 // login the user 
@@ -274,6 +332,8 @@ exports.logIn = async(req,res)=>{
 
         });
 
+        console.log("userExists",userExists);
+
         if(!userExists){
 
             return res.status(400).json({
@@ -290,6 +350,8 @@ exports.logIn = async(req,res)=>{
 
         // check the user verified is true or not 
 
+        console.log("hellow1");
+
         if(userExists.isVerified === false){
 
             return res.status(400).json({
@@ -303,13 +365,23 @@ exports.logIn = async(req,res)=>{
 
         }
 
-
+        console.log("hellow 2");
         // check the pasword 
 
-        
 
-        if(!await bcrypt.compare(userExists.password,password)){
-        
+        console.log(userExists);
+
+        console.log(password);
+
+        // const checkPassword = await bcrypt.compare(password,userExists.password);
+
+        const checkPassword = await bcrypt.compare(password,userExists[0].password);
+
+        console.log("hellow3");
+
+        if(checkPassword === false){
+            
+            console.log("password not match");
             return res.status(400).json({
 
                 success: false,
@@ -323,17 +395,33 @@ exports.logIn = async(req,res)=>{
 
         // create token 
 
-        const token = jw
+        const {refreshToken,accessToken} = await generateRefreshAndAccessToken(userExists[0]._id);
+
+        console.log(userExists._id);
+        const loggedInUser = await User.findOne({ _id:userExists[0]._id }).select("-refreshToken -password");
 
         //send the cookie
 
-        // send the mail 
+        console.log("logged user ",loggedInUser);
 
+        // const options = {
 
+        //     httpOnly:true,
+        //     secure:true,
+        //     expiresIn:new Date()+24*60*60*1000,
 
+        // }
 
+        return res.status(200).cookie("AccessToken",accessToken,options).cookie("RefreshToken",refreshToken,options).json({
 
+            success:true,
+            data:{refreshToken,accessToken,loggedInUser} ,
+            message:"user Logged In Successfully "
 
+        })
+        
+
+        // send the ma
     }
 
     catch(error){
@@ -348,6 +436,270 @@ exports.logIn = async(req,res)=>{
                 error:error.message
 
             })
+    }
+}
+
+
+
+
+// logout condition 
+
+
+exports.logOut = async(req,res)=>{
+
+    try{
+
+        const userId = req.user._id;
+
+        if(!userId){
+
+            return res.status(400).json({
+
+                success: false,
+                data:null,
+                message: "user id not found  ",
+                
+            })
+
+        }
+
+        const findUser = await User.findByIdAndUpdate(userId,{
+
+            refreshToken:undefined,
+
+        },{new:true});
+
+        return res.status(201).clearCookie("AccessToken",options).clearCookie("RefreshToken",options).json({
+
+            success:true,
+            data:findUser,
+            message:"user logout successfully ",
+
+        })
+
+
+    }
+
+    catch(error){
+        
+        console.log(error);
+
+        return res.status(400).json({
+
+            success: false,
+            data:null,
+            message: "error while log out ",
+            error:error.message
+
+        })
+
+    }
+}
+
+
+
+
+// forgot password
+
+
+exports.resetPassword = async(req,res)=>{
+
+    try{
+
+
+        // ftech th data 
+
+        const userId = req.user._id;
+
+        const {oldPassword,currentPassword,confirmPassword} = req.body;
+
+
+        // validate the data 
+
+
+        if(!userId || !currentPassword || !oldPassword || !confirmPassword){
+
+            return res.status(400).json({
+
+                success: false,
+                data:null,
+                message: "user id not found  ",
+                
+            })
+
+        }   
+
+        // find the user 
+
+        const userDetails = await User.findById(userId);
+
+        // compare the old and existing password 
+
+        const checkPassword = await bcrypt.compare(currentPassword,userDetails.password);
+
+        if(checkPassword){
+
+            // compare currentPassword and  confirmPassword 
+
+            if(currentPassword !== confirmPassword){
+
+                return res.status(400).json({
+
+                    success: false,
+                    data:null,
+                    message: " password  currentPassword and confirmPassword does not match",
+                    
+                })
+            }
+
+
+            // hash the new password 
+
+            const hashPassword = await bcrypt.hash(currentPassword,10);
+
+            userDetails.password = hashPassword;
+
+
+            // update the user details 
+
+            await userDetails.save();
+
+            // successfully send the mail to the user 
+
+            await sendMail(email,"password reset successfully ");
+            
+
+            return res.status(200).json({
+
+                success: true,
+                data:userDetails,
+                message: " password reset  successfully",
+                
+            })
+
+        }
+
+        else{
+
+            
+            return res.status(400).json({
+
+                success: false,
+                data:null,
+                message: " password  currentPassword and oldPassword does not match",
+                
+            })
+
+
+        }
+
+    }
+
+    catch(error){
+
+        console.log(error);
+
+        return res.status(400).json({
+
+            success: false,
+            data:null,
+            message: "error reset the password  ",
+            error:error.message
+
+        })
+
+    }
+}
+
+
+
+
+
+
+
+exports.forgotPassword = async(req,res)=>{
+
+    try{
+
+        // fetch the data 
+
+        const {currentPassword,confirmPassword,email} = req.body;
+
+
+        // validate the data 
+
+
+        if(!email || !currentPassword || !confirmPassword){
+
+            return res.status(400).json({
+
+                success: false,
+                data:null,
+                message: "all fileds are  not found  ",
+                
+            })
+
+        }   
+
+        // find the user 
+
+        const userDetails = await User.findOne({email:email});
+
+
+            // compare currentPassword and  confirmPassword 
+
+            if(currentPassword !== confirmPassword){
+
+                return res.status(400).json({
+
+                    success: false,
+                    data:null,
+                    message: " password  currentPassword and confirmPassword does not match",
+                    
+                })
+            }
+
+
+            // hash the new password 
+
+            const hashPassword = await bcrypt.hash(currentPassword,10);
+
+            userDetails.password = hashPassword;
+
+
+            // update the user details 
+
+            await userDetails.save();
+
+            // successfully send the mail to the user 
+
+            await sendMail(email,"password change successfully ");
+            
+
+            return res.status(200).json({
+
+                success: true,
+                data:userDetails,
+                message: " password reset  successfully",
+                
+            })
+
+
+
+    }
+
+    catch(error){
+
+        console.log(error);
+
+        return res.status(400).json({
+
+            success: false,
+            data:null,
+            message: "error reset the password  ",
+            error:error.message
+
+        })
 
     }
 }

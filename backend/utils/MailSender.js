@@ -12,7 +12,7 @@ exports.sendMail = async(email,title,body)=>{
         const createTransport = nodemailer.createTransport({
     
             host:process.env.MAIL_HOST,
-            port:587,
+            port:587,  // 465 is also a port number 
             auth:{
     
                 user:process.env.MAIL_USER,
@@ -25,6 +25,7 @@ exports.sendMail = async(email,title,body)=>{
     
             from:`${process.env.MAIL_USER}`,
             to:`${email}`,
+            subject:`${title}`,
             html:`${body}`
             
         });
