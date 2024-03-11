@@ -9,18 +9,22 @@ const {
     deletePost,
     deleteCommentFromPost,
     createComment,
-    likePost,
-    unlikePost,
+    likeUnlikePost,
+    // unlikePost,
     bookMarkPost,
     removebookMarkedPost,
     addLikeToComment,
     addCommentToComment,
+    getAllUserPosts,
+    getUserLikedPosts,
+    getAllPosts,
 
                     
 } = require("../controller/Post");
 
 const {Auth} = require("../middleware/auth");
 
+const {userProfileButtonDescribe,performFollowUnfollow} = require("../controller/User")
 
 router.post("/createPost",Auth,createPost);
 
@@ -30,9 +34,9 @@ router.post("/createComment",Auth,createComment);
 
 router.post("/deleteComment",Auth,deleteCommentFromPost);
 
-router.post("/likePost/:postId",Auth,likePost);
+router.post("/likeUnlikePost/:postId",Auth,likeUnlikePost);
 
-router.post("/unlikePost/:postId",Auth,unlikePost);
+// router.post("/unlikePost/:postId",Auth,unlikePost);
 
 router.post("/bookMarkPost/:postId",Auth,bookMarkPost);
 
@@ -42,8 +46,24 @@ router.post("/addLikeToComment",Auth,addLikeToComment);
 
 router.post("/addCommentToComment",Auth,addCommentToComment);
 
+router.get("/getAllUserPosts",Auth,getAllUserPosts);
+
+router.get("/getUserLikedPosts",getUserLikedPosts);
+
+
+router.get("/getAllPosts",getAllPosts);
+
+router.get("/userProfileButtonDescribe",userProfileButtonDescribe);
+
+router.post("/performFollowUnfollow",performFollowUnfollow);
+
+
+
+
 
 module.exports = router;
+
+
 
 
 

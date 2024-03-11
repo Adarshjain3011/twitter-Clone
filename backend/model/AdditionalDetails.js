@@ -13,16 +13,39 @@ const AdditionalDetailsSchema = new mongoose.Schema({
         type:String,
         
     },
+    bio:{
 
+        type:String,
+        trim:true
+
+    },
+
+    city:{
+
+        type:String,
+
+    },
+    additionalLink:{
+
+        type:String
+
+    },
     ContactNo:{
 
 
         type:Number,
+
+    },
+    coverImage:{
+
+        type:String,
 
     }
 
 })
 
 module.exports =mongoose.model("AdditionalDetails",AdditionalDetailsSchema);
+
+
 
 

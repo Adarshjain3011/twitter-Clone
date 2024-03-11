@@ -41,10 +41,19 @@ const CommentSchema = new mongoose.Schema({
     comment:[{
 
         type:mongoose.Schema.Types.ObjectId,
-        ref:"Comment"
+        ref:"Post"
         
-    }]
+    }],
+
+    isCommented:{
+
+        type:Boolean,
+        default:false
+        
+    }
 })
 
 module.exports = mongoose.model("Comment",CommentSchema);
+
+
 

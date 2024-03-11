@@ -7,7 +7,7 @@ const Post = require("../model/Post");
 const { UploadImageToCloudinary } = require("../utils/Cloudinary");
 
 const Comment = require("../model/Comment");
-const { default: mongoose } = require("mongoose");
+// const { default: mongoose } = require("mongoose");
 
 
 // create post 
@@ -21,6 +21,10 @@ exports.createPost = async (req, res) => {
         const userId = req.user._id;
 
         const { description } = req.body;
+
+        console.log("description ki value at create post ",req.body);
+
+        console.log("create post mai description ",description);
 
         // validate the user id
 
@@ -72,20 +76,71 @@ exports.createPost = async (req, res) => {
 
             console.log("video", req.files.video);
 
-            const uploadResponse = await UploadImageToCloudinary(req.files.video, process.env.FOLDER_NAME);
+            console.log("length of uploaded files ", req.files['video'].length);
+
+            const files = req.files['video'];
+
+            // console.log(req);
+
+            console.log(typeof files);
 
 
-            console.log("uplaod response", uploadResponse);
 
-            newPost.postUrl = uploadResponse.secure_url;
+            if (req.files['video'].length === undefined) {
 
-            // newPost.timeDuration = uploadResponse.time_duration;
+                const uploadResponse = await UploadImageToCloudinary(req.files.video, process.env.FOLDER_NAME);
 
-            if (uploadResponse.time_duration !== undefined) {
 
-                newPost.timeDuration = uploadResponse.time_duration;
+                console.log("uplaod response", uploadResponse);
+
+                // newPost.postUrl = uploadResponse.secure_url;
+
+                newPost.postUrl.push(uploadResponse.secure_url);
+
+                // newPost.timeDuration = uploadResponse.time_duration;
+
+                if (uploadResponse.duration !== undefined) {
+
+                    newPost.timeDuration.push(uploadResponse.duration);
+
+
+                }
+            }
+
+
+            else {
+
+
+
+                for (const file of files) {
+
+
+                    console.log("every file ", file);
+
+                    const uploadResponse = await UploadImageToCloudinary(file, process.env.FOLDER_NAME);
+
+
+                    console.log("uplaod response", uploadResponse);
+
+                    // newPost.postUrl = uploadResponse.secure_url;
+
+                    newPost.postUrl.push(uploadResponse.secure_url);
+
+                    // newPost.timeDuration = uploadResponse.time_duration;
+
+                    if (uploadResponse.duration !== undefined) {
+
+                        newPost.timeDuration.push(uploadResponse.duration);
+
+
+                    }
+
+                }
 
             }
+
+
+
 
         }
 
@@ -136,6 +191,7 @@ exports.createPost = async (req, res) => {
         })
 
     }
+
 }
 
 
@@ -292,9 +348,9 @@ exports.deletePost = async (req, res) => {
 
 
 
-// like Controller
+// like unlike  manager  Controller
 
-exports.likePost = async (req, res) => {
+exports.likeUnlikePost = async (req, res) => {
 
 
     try {
@@ -302,6 +358,8 @@ exports.likePost = async (req, res) => {
         const userId = req.user._id;
 
         const postId = req.params.postId;
+
+        console.log("post id is ", postId);
 
         if (!userId || !postId) {
 
@@ -315,6 +373,7 @@ exports.likePost = async (req, res) => {
             })
 
         }
+
         const findUser = await User.findById(userId);
 
         if (!findUser) {
@@ -328,15 +387,7 @@ exports.likePost = async (req, res) => {
             })
         }
 
-        const findPost = await Post.findByIdAndUpdate(postId, {
-
-            $push: {
-
-                likes: findUser._id,
-
-            }
-        }, { new: true });
-
+        const findPost = await Post.findById(postId);
 
         if (!findPost) {
 
@@ -349,11 +400,43 @@ exports.likePost = async (req, res) => {
             })
         }
 
+        const userAlreadyLikedPost = findPost.likes.includes(userId);
+
+        let updatePost;
+
+        if (!userAlreadyLikedPost) {
+
+
+            updatePost = await Post.findByIdAndUpdate(postId, {
+
+                $push: {
+
+                    likes: userId,
+
+                }
+            }, { new: true }).exec();
+
+
+        }
+        else {
+
+            updatePost = await Post.findByIdAndUpdate(postId, {
+
+                $pull: {
+
+                    likes: userId,
+
+                }
+
+            }, { new: true }).exec();
+
+        }
+
         return res.status(200).json({
 
             success: false,
-            data: findPost,
-            message: "Post Liked Successfully"
+            data: updatePost,
+            message: "Post Liked and Uliked Successfully"
 
         })
 
@@ -368,94 +451,7 @@ exports.likePost = async (req, res) => {
 
             success: false,
             data: null,
-            message: "there is something error while like the post  "
-
-        })
-
-    }
-}
-
-
-
-
-
-
-// unlike Post 
-
-exports.unlikePost = async (req, res) => {
-
-    try {
-
-
-        const userId = req.user._id;
-
-        const postId = req.params.postId;
-
-        if (!userId || !postId) {
-
-            return res.status(400).json({
-
-                success: false,
-                data: null,
-
-                message: "all fileds are not define ",
-
-            })
-
-        }
-        const findUser = await User.findById(userId);
-
-        if (!findUser) {
-
-            return res.status(400).json({
-
-                success: false,
-                data: null,
-                message: " this user is not exists   "
-
-            })
-        }
-
-        const findPost = await Post.findByIdAndUpdate(postId, {
-
-            $pull: {
-
-                comments: findUser._id,
-
-            }
-        }, { new: true });
-
-
-        if (!findPost) {
-
-            return res.status(400).json({
-
-                success: false,
-                data: null,
-                message: "this post is not exists  "
-
-            })
-        }
-
-        return res.status(200).json({
-
-            success: false,
-            data: findPost,
-            message: "Post UnLiked Successfully"
-
-        })
-
-    }
-
-    catch (error) {
-
-        console.log(error);
-
-        return res.status(400).json({
-
-            success: false,
-            data: null,
-            message: "there is something error while like the post  "
+            message: "there is something error while like and unlike the posts  the post  "
 
         })
 
@@ -674,7 +670,7 @@ exports.createComment = async (req, res) => {
 
             })
         }
-        
+
         const findPost = await Post.findById(postId);
 
         // check post exists or not 
@@ -694,25 +690,25 @@ exports.createComment = async (req, res) => {
 
         const createComment = await Comment.create({
 
-        
+
             post: findPost._id,
 
         });
 
 
-        if(description !== undefined){
+        if (description !== undefined) {
 
             createComment.description = description;
 
         }
 
-        if(req.files && req.files.file !== undefined){
+        if (req.files && req.files.file !== undefined) {
 
-            const uploadResponse = await UploadImageToCloudinary(process.env.FOLDER_NAME,req.files.video);
+            const uploadResponse = await UploadImageToCloudinary(process.env.FOLDER_NAME, req.files.video);
 
             createComment.url = uploadResponse.secure_url;
 
-            if(uploadResponse.time_duration !==undefined){
+            if (uploadResponse.time_duration !== undefined) {
 
                 createComment.timeDuration = uploadResponse.time_duration;
 
@@ -788,7 +784,7 @@ exports.deleteCommentFromPost = async (req, res) => {
 
         //validate the data 
 
-        if ( !commentId) {
+        if (!commentId) {
 
             return res.status(400).json({
 
@@ -816,10 +812,10 @@ exports.deleteCommentFromPost = async (req, res) => {
         }
 
 
-        console.log("delete Comment ",deleteComment);
+        console.log("delete Comment ", deleteComment);
         // update the post by removing the comment from the post 
 
-        const updatePost = await Post.findByIdAndUpdate({_id:deleteComment.post}, {
+        const updatePost = await Post.findByIdAndUpdate({ _id: deleteComment.post }, {
 
             $pull: {
 
@@ -872,18 +868,18 @@ exports.deleteCommentFromPost = async (req, res) => {
 
 
 
-exports.addLikeToComment = async(req,res)=>{
+exports.addLikeToComment = async (req, res) => {
 
 
-    try{
+    try {
 
         const userId = req.user._id;
 
-        const {commentId} = req.body;
+        const { commentId } = req.body;
 
-        if(!commentId){
+        if (!commentId) {
 
-            
+
             return res.status(400).json({
 
                 success: false,
@@ -898,50 +894,49 @@ exports.addLikeToComment = async(req,res)=>{
         const commentAlreadyExists = await Comment.findById(commentId);
 
 
-        if(commentAlreadyExists){
+        if (commentAlreadyExists) {
 
             const exists = commentAlreadyExists.likes.includes(userId);
 
-            if(exists){
+            if (exists) {
 
                 commentAlreadyExists.likes.pop(userId);
 
             }
 
-            else{
+            else {
 
                 commentAlreadyExists.likes.push(userId);
 
             }
         }
 
-        else{
+        else {
 
             return res.status(400).json({
 
                 success: false,
                 data: null,
                 message: "this comment id is not valid  "
-    
+
             })
 
         }
-    
+
         await commentAlreadyExists.save();
 
 
         return res.status(200).json({
 
             success: true,
-            data:null,
+            data: null,
             message: " Successfully updated comment like or dislike   "
 
         })
 
-
     }
 
-    catch(error){
+    catch (error) {
 
         console.log(error);
 
@@ -961,9 +956,9 @@ exports.addLikeToComment = async(req,res)=>{
 // add comment to comment 
 
 
-exports.addCommentToComment = async(req,res)=>{
+exports.addCommentToComment = async (req, res) => {
 
-    try{
+    try {
 
         const userId = req.user._id;
 
@@ -985,7 +980,7 @@ exports.addCommentToComment = async(req,res)=>{
 
         }
 
-        console.log("comment id",commentId);
+        console.log("comment id", commentId);
 
         const findUser = await User.findById(userId);
 
@@ -1001,7 +996,7 @@ exports.addCommentToComment = async(req,res)=>{
 
             })
         }
-        
+
         const findComment = await Comment.findById(commentId);
 
         // check Comment exists or not 
@@ -1022,19 +1017,19 @@ exports.addCommentToComment = async(req,res)=>{
         const createComment = await Comment.create({});
 
 
-        if(description !== undefined){
+        if (description !== undefined) {
 
             createComment.description = description;
 
         }
 
-        if(req.files && req.files.file !== undefined){
+        if (req.files && req.files.file !== undefined) {
 
-            const uploadResponse = await UploadImageToCloudinary(process.env.FOLDER_NAME,req.files.video);
+            const uploadResponse = await UploadImageToCloudinary(process.env.FOLDER_NAME, req.files.video);
 
             createComment.url = uploadResponse.secure_url;
 
-            if(uploadResponse.time_duration !==undefined){
+            if (uploadResponse.time_duration !== undefined) {
 
                 createComment.timeDuration = uploadResponse.time_duration;
 
@@ -1081,7 +1076,7 @@ exports.addCommentToComment = async(req,res)=>{
 
     }
 
-    catch(error){
+    catch (error) {
 
         console.log(error);
 
@@ -1095,6 +1090,425 @@ exports.addCommentToComment = async(req,res)=>{
 
     }
 }
+
+
+
+
+exports.getAllUserPosts = async (req, res) => {
+
+    try {
+
+        const { userName } = req.query;
+
+        // const{userName} = req.body;
+
+        console.log("user name is ", userName);
+
+        const pageNumber = Number(Object.values(req.query)[0]);
+
+        console.log("all user posts page naumber ",pageNumber);
+
+
+        if (!userName) {
+
+            return res.status(400).json({
+
+                success: false,
+                data: null,
+                message: "fileds are empty "
+
+            })
+
+        }
+
+
+        const allUserPosts = await User.findOne({ name: userName }).populate({
+
+            path: "posts",
+            options: {
+
+                sort: { createdAt: -1 }, // Sort posts by creation date (descending)
+                limit: 5, // Limit to 5 posts per request
+                skip: pageNumber * 5, 
+                // Skip posts based on page number
+            },
+
+        });
+
+        console.log("all user posts ", allUserPosts);
+
+
+
+        return res.status(200).json({
+
+            success: true,
+            data: allUserPosts,
+            message: "successfully getting all the user posts  ",
+
+        })
+
+
+    }
+    catch (error) {
+
+        return res.status(400).json({
+
+            success: false,
+            data: null,
+            message: "error occur while getting all  the post of user ",
+
+        })
+    }
+}
+
+
+
+
+
+
+
+exports.getUserLikedPosts = async (req, res) => {
+
+
+    try {
+
+        console.log("getUser Like posts ke andar ");
+
+        const { userName } = req.query;
+
+        // const{userName} = req.body;
+
+        console.log("user name is ", userName);
+
+        const pageNumber = Number(Object.values(req.query)[1]);
+
+        console.log("page number in get user liked  ", pageNumber);
+
+
+
+        if (!userName) {
+
+            return res.status(400).json({
+
+                success: false,
+                data: null,
+                message: "fileds are empty "
+
+            })
+
+        }
+
+        let userExists = await User.find({ name: userName });
+
+        if (!userExists) {
+
+            return res.status(400).json({
+
+                success: false,
+                data: null,
+                message: "this user not exits "
+
+            })
+
+        }
+
+        console.log("user exits ", userExists[0]);
+
+        // Find posts where the user's ID is present in the "likes" array with sorting, limiting, and skipping
+        const likedPosts = await Post.find({ likes: { $in: [userExists[0]._id] } }).populate({
+            
+            path: 'user',
+            select:'name email userImage',
+
+        }).sort({ createdAt: -1 }).limit(5).skip(pageNumber * 5);
+
+
+        // console.log("user liked posts ",allUserLikedPosts);
+
+        console.log("user liked posts", likedPosts);
+
+        // post ke andar check karo likes wale array ke andar kya user ki id Exists karti hai 
+
+        // console.log("all user liked posts  posts ",allPosts);
+
+        return res.status(200).json({
+
+            success: true,
+            data: likedPosts,
+            message: " user liked posts fetch successfully "
+
+        })
+
+
+    }
+    catch (error) {
+
+        console.log(error);
+
+        return res.status(400).json({
+
+            success: false,
+            data: null,
+            message: "some error occur while fetching user liked posts "
+
+        })
+
+    }
+}
+
+
+
+exports.getAllPosts = async (req, res) => {
+
+    try {
+
+        console.log("reach to the ");
+
+        // const userId = req.user._id || req.query.userId;
+
+        // const pageNumber = Number(Object.values(req.query)[0]);
+
+        console.log("page number in getAll posts ", req.query);
+
+        const pageNumber = Number(Object.values(req.query)[0]);
+
+        console.log("page number value is ",pageNumber);
+
+        // console.log("page number is ", Object.values(req.query)[0]);
+
+
+        const allPosts = await Post.find({}).populate([{ path: 'user', select : 'name email userImage' },
+        ])
+        .sort({ createdAt: -1 }) // Default sorting by descending creation date
+        .limit(5) // Default limit of 5 posts
+        .skip(pageNumber * 5); // Default skipping of 0 posts
+
+
+        console.log("all user posts ", allPosts);
+
+        if (allPosts) {
+
+            return res.status(200).json({
+
+                success: true,
+                data: allPosts,
+                message: "successfully getting all the posts present in DB   ",
+
+            })
+
+        }
+        else {
+
+            return res.status(400).json({
+
+                success: false,
+                data: null,
+                message: "can't get any posts ",
+
+            })
+
+        }
+
+    }
+    catch (error) {
+
+
+        console.log(error);
+
+        return res.status(400).json({
+
+            success: false,
+            data: null,
+            message: "error occur while getting the post ",
+            error: error.message,
+
+        })
+    }
+}
+
+
+
+
+
+
+exports.commentOnPost = async (req,res)=>{
+
+
+    try {
+
+        // fetech the data 
+
+        const userId = req.user._id;
+
+        const { description,postId } = req.body;
+
+        // validate the user id
+
+        if (!userId) {
+
+            return res.status(400).json({
+
+                success: false,
+                data: null,
+
+                message: "all fileds are not fullfill ",
+
+            })
+        }
+
+        // check user exists or not 
+
+        const userExists = await User.findById(userId);
+
+        if (!userExists) {
+
+            return res.status(400).json({
+
+                success: false,
+                data: null,
+
+                message: "this user id not exists  ",
+
+            })
+        }
+
+
+        // create a new Post 
+
+        // create a new comment 
+
+        const newPost = await Post.create({ user: userExists._id });
+
+
+        console.log("new post ", newPost);
+
+        if (description !== undefined) {
+
+            newPost.description = description;
+
+        }
+
+
+        if (req.files && req.files.video !== undefined) {
+
+
+            console.log("video", req.files.video);
+
+            console.log("length of uploaded files ", req.files['video'].length);
+
+            const files = req.files['video'];
+
+            // console.log(req);
+
+            console.log(typeof files);
+
+            // for()
+
+            if (req.files['video'].length === undefined) {
+
+                const uploadResponse = await UploadImageToCloudinary(req.files.video, process.env.FOLDER_NAME);
+
+
+                console.log("uplaod response", uploadResponse);
+
+                // newPost.postUrl = uploadResponse.secure_url;
+
+                newPost.postUrl.push(uploadResponse.secure_url);
+
+                // newPost.timeDuration = uploadResponse.time_duration;
+
+                if (uploadResponse.duration !== undefined) {
+
+                    newPost.timeDuration.push(uploadResponse.duration);
+
+
+                }
+            }
+
+
+            else {
+
+
+
+                for (const file of files) {
+
+
+                    console.log("every file ", file);
+
+                    const uploadResponse = await UploadImageToCloudinary(file, process.env.FOLDER_NAME);
+
+
+                    console.log("uplaod response", uploadResponse);
+
+                    // newPost.postUrl = uploadResponse.secure_url;
+
+                    newPost.postUrl.push(uploadResponse.secure_url);
+
+                    // newPost.timeDuration = uploadResponse.time_duration;
+
+                    if (uploadResponse.duration !== undefined) {
+
+                        newPost.timeDuration.push(uploadResponse.duration);
+
+
+                    }
+
+                }
+
+            }
+
+
+        }
+
+        newPost.isComment = true;
+
+        // upadate the new post 
+
+        await newPost.save();
+
+
+        // find the post on which we have to comment  using posr id 
+
+        const findPost  = await Post.findByIdAndUpdate(postId,{
+
+            $push:{
+
+                comments:newPost._id,
+
+            },
+
+        },{new:true}).exec(); 
+
+
+        return res.status(200).json({
+
+            success: true,
+            data: findPost,
+            message: "comment is successfully created on the post "
+
+        })
+
+
+    }
+
+    catch (error) {
+
+        console.log(error);
+
+        return res.status(400).json({
+
+            success: false,
+            data: null,
+            message: "there is something error while creating the comment on the post "
+
+        })
+
+    }
+}
+
+
+
+
 
 
 

@@ -7,6 +7,8 @@ const bcrypt = require("bcrypt");
 
 const otpGenerator = require("otp-generator");
 
+const AdditionalDetails = require("../model/AdditionalDetails");
+
 
 // const sendMail = require("../utils/MailSender");
 
@@ -21,17 +23,20 @@ exports.sendOtp = async (email) => {
 
     try {
 
-        const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false ,lowerCaseAlphabets:false });
+        const otp = otpGenerator.generate(5, { upperCaseAlphabets: false, specialChars: false ,lowerCaseAlphabets:false });
+
+        const createOtp = await Otp.create({
+
+            email:email,
+             otp:otp
+
+        });
+
 
         const mailResponse = await sendMail(email, "successfully sent verification otp ", otp);
 
         console.log("mail send successfully ", mailResponse);
 
-        const createOtp = await Otp.create({
-
-            email, otp
-
-        });
 
         console.log("createOtp",createOtp);
 
@@ -59,6 +64,65 @@ exports.sendOtp = async (email) => {
 
 }
 
+
+exports.resendOtp = async(req,res)=>{
+
+    try{
+
+
+        console.log("resend otp ke andar ");
+
+        const {email} = req.body ;
+
+        console.log("email is ",email);
+        const response = await this.sendOtp(email);
+
+        console.log("response is ",response);
+
+
+        if(response){
+
+            return res.status(200).json({
+
+                success:true,
+                data:null,
+                message:"otp send successfully to the user email"
+
+            })
+        }
+
+        else{
+
+            return res.status(400).json({
+
+                success:false,
+                data:null,
+                message:"error occur while sending otp to the user email"
+
+            })
+            
+        }
+
+    }
+
+    catch(error){
+
+        return res.status(400).json({
+
+            success:false,
+            data:null,
+            message:"error occur while sending otp to the user email"
+
+        })
+        
+
+    }
+}
+
+
+
+
+
 exports.VerifyOtp = async (req, res) => {
 
     try {
@@ -82,14 +146,13 @@ exports.VerifyOtp = async (req, res) => {
 
         }
 
-
         // find most recent otp 
 
         const mostRecent = await Otp.find({ email: email }).sort({ createdAt: -1 }).limit(1);
 
         console.log("most recent",mostRecent);
 
-        if (!mostRecent) {
+        if (mostRecent.length === 0) {
 
             console.log("1");
             return res.status(400).json({
@@ -125,7 +188,7 @@ exports.VerifyOtp = async (req, res) => {
             
         }
         
-        const updateUser = await Otp.findOneAndUpdate({ email: email }, {
+        const updateUser = await User.findOneAndUpdate({ email: email }, {
 
             isVerified: true
 
@@ -160,6 +223,10 @@ exports.VerifyOtp = async (req, res) => {
     }
 }
 
+
+
+
+
 exports.signUp = async (req, res) => {
 
     try {
@@ -167,6 +234,8 @@ exports.signUp = async (req, res) => {
         // fetch the data 
 
         const { name, email, password } = req.body;
+
+        console.log(req.body);
 
         if (!name || !email || !password) {
 
@@ -178,6 +247,7 @@ exports.signUp = async (req, res) => {
             })
 
         }
+
 
         const userExists = await User.findOne({ email: email });
 
@@ -197,6 +267,8 @@ exports.signUp = async (req, res) => {
 
         if (userExists && userExists.isVerified === false) {
 
+            await this.sendOtp(email);
+
             return res.status(301).json({
 
                 success: false,
@@ -208,19 +280,40 @@ exports.signUp = async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const createOtp = await this.sendOtp(email);
+        // const createOtp = await this.sendOtp(email);
+
+        // create the additional detaisl fields 
+
+        const newAddtionalDetails = await AdditionalDetails.create({
+
+            dob:"",
+            gender:null,
+            ContactNo:"",
+            coverImage:"",
+            bio:"",
+            city:"",
+            additionalLink:"",
+            ContactNo:"",
+            coverImage:"",
+
+        })
+
+
 
         const createUser = await User.create({
 
             name: name,
             email: email,
             password: hashedPassword,
-            userImage: `https://api.dicebear.com/5.x/initials/svg?seed=${name}`
+            userImage: `https://api.dicebear.com/5.x/initials/svg?seed=${name}`,
+            
+            addtionalDetails:newAddtionalDetails._id,
 
 
         })
 
 
+        await this.sendOtp(createUser.email);
 
         return res.status(200).json({
 
@@ -250,13 +343,13 @@ exports.signUp = async (req, res) => {
 
 
 
-const options = {
+// const options = {
 
-    httpOnly:true,
-    secure:true,
-    expiresIn:new Date()+24*60*60*1000,
+//     httpOnly:true,
+//     secure:true,
+//     expiresIn:new Date()+24*60*60*1000,
 
-}
+// }
 
 
 
@@ -301,6 +394,7 @@ const generateRefreshAndAccessToken = async(userId)=>{
         console.log(error);
 
         return false;
+        
     }
 }
 
@@ -312,11 +406,17 @@ exports.logIn = async(req,res)=>{
 
     try{
 
-        const {emailOrUserName,password} = req.body;
+        // const {emailOrUserName,password} = req.body;
+
+        const emailOrUserName = req.body.email;
+        const password = req.body.password;
+
+        console.log(emailOrUserName,password);
+
 
         if(!emailOrUserName || !password){
 
-            return res.status(400).json({
+            return res.status(410).json({
 
                 success: false,
                 data:null,
@@ -351,10 +451,14 @@ exports.logIn = async(req,res)=>{
         // check the user verified is true or not 
 
         console.log("hellow1");
+        
+        console.log(userExists.isVerified);
 
-        if(userExists.isVerified === false){
+        if( userExists[0].isVerified !== true){
 
-            return res.status(400).json({
+            await this.sendOtp(userExists.email);
+
+            return res.status(410).json({
 
                 success: false,
                 data:null,
@@ -404,21 +508,26 @@ exports.logIn = async(req,res)=>{
 
         console.log("logged user ",loggedInUser);
 
-        // const options = {
+        const options = {
+            httpOnly: true,
+            secure: true, // Set to true if using HTTPS
+            Credential:true,
+            expiresIn: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
 
-        //     httpOnly:true,
-        //     secure:true,
-        //     expiresIn:new Date()+24*60*60*1000,
+          };
 
-        // }
 
-        return res.status(200).cookie("AccessToken",accessToken,options).cookie("RefreshToken",refreshToken,options).json({
+        return res
+        .status(200)
+        .cookie("AccessToken", accessToken, options)
+        .cookie("RefreshToken", refreshToken, options)
+        .json({
+          success: true,
+          data: { refreshToken, accessToken, loggedInUser },
+          message: "User logged in successfully",
 
-            success:true,
-            data:{refreshToken,accessToken,loggedInUser} ,
-            message:"user Logged In Successfully "
-
-        })
+        });
+  
         
 
         // send the ma
@@ -433,7 +542,7 @@ exports.logIn = async(req,res)=>{
                 success: false,
                 data:null,
                 message: "error while creating the sign up ",
-                error:error.message
+                error:error.message,
 
             })
     }
@@ -615,8 +724,6 @@ exports.resetPassword = async(req,res)=>{
 
 
 
-
-
 exports.forgotPassword = async(req,res)=>{
 
     try{
@@ -703,3 +810,5 @@ exports.forgotPassword = async(req,res)=>{
 
     }
 }
+
+

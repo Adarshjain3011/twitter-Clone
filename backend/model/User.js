@@ -62,6 +62,22 @@ const userSchema = new mongoose.Schema({
 
     }],
 
+    likes:[{
+
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"User",
+        trim:true,
+
+    }],
+    
+    comment:[{
+
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Comment",
+        trim:true,
+
+    }],
+
     userImage: {
 
         type: String,

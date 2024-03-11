@@ -2,6 +2,12 @@ const mongoose = require("mongoose");
 
 const PostSchema = mongoose.Schema({
 
+    isComment:{
+
+        type:Boolean,
+        default:false,
+        
+    },
     user:{
 
         type:mongoose.Schema.Types.ObjectId,
@@ -10,7 +16,7 @@ const PostSchema = mongoose.Schema({
     },
     postUrl:{
 
-        type:String,
+        type:[String],
 
     },
 
@@ -22,7 +28,7 @@ const PostSchema = mongoose.Schema({
 
     timeDuration:{
 
-        type:String,
+        type:[String],
     },
 
     likes:[{
@@ -36,7 +42,7 @@ const PostSchema = mongoose.Schema({
     comments:[{
 
         type:mongoose.Schema.Types.ObjectId,
-        ref:"Comment"
+        ref:"Post"
 
     }],
 
@@ -44,11 +50,27 @@ const PostSchema = mongoose.Schema({
 
         type:mongoose.Schema.Types.ObjectId,
         ref:"User"
+ 
+    }],
+    tagPeople:[{
 
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"User"
+        
     }]
 
 
-})
+},{
+
+    timestamps: true,
+
+}
+)
 
 module.exports = mongoose.model("Post",PostSchema);
+
+
+
+
+
 

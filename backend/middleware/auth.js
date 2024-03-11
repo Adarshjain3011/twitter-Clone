@@ -7,8 +7,13 @@ exports.Auth = async(req,res,next)=>{
 
     try{
 
+        // console.log(req.cookies);
+
         const token = req.body.token || req.cookies.AccessToken || req.header("Authorization")?.replace("bearer ","");
 
+        console.log("token data ",token);
+
+        
 
         if(!token){
 
@@ -26,7 +31,7 @@ exports.Auth = async(req,res,next)=>{
 
         const tokenData = jwt.verify(token,process.env.JWT_ACCESS_TOKEN);
 
-        console.log(tokenData);
+        console.log("auth data token",tokenData);
 
         if(!tokenData){
 
@@ -44,9 +49,6 @@ exports.Auth = async(req,res,next)=>{
         req.user = tokenData;
 
         next();
-
-
-    
 
     }
     catch(error){
