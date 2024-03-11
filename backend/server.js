@@ -103,13 +103,19 @@ app.use(cors({
 app.use(express.urlencoded({ extended:true}));
 
 
-app.get("/api/v1/",(req,res)=>{
+// app.get("/api/v1",(req,res)=>{
+
+//     res.send("<h1>hellow </h1>");
+
+// })
+
+// mount the routes 
+
+app.get("/",(req,res)=>{
 
     res.send("<h1>hellow </h1>");
 
 })
-
-// mount the routes 
 
 
 app.use("/api/v1",Routes);
@@ -119,7 +125,7 @@ app.use("/api/v1",Post);
 
 // 
 
-dbConnect();
+ dbConnect();
 
 CloudinaryConnect();
 
@@ -129,6 +135,9 @@ CloudinaryConnect();
 //     console.log("app running successfully ");
 
 // })
+
+
+
 
 
 server.listen(process.env.PORT,()=>{
