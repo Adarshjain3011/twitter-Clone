@@ -117,6 +117,10 @@ app.get("/",(req,res)=>{
 
 })
 
+app.get('/sample', (req, res) => {
+    res.json({ message: 'This is a sample API response' });
+  });
+
 
 app.use("/api/v1",Routes);
 
@@ -140,7 +144,7 @@ CloudinaryConnect();
 
 
 
-server.listen(process.env.PORT,()=>{
+app.listen(process.env.PORT,()=>{
 
     console.log("web server running ");
 
