@@ -115,7 +115,7 @@ const SideFeatureContainer = () => {
 
         console.log("haa call gayi ");
 
-         dispatch(AuthToken());
+        //  dispatch(AuthToken());
 
         if (!isLoading) {
 
@@ -138,7 +138,7 @@ const SideFeatureContainer = () => {
             }
        
         }
-        tokenCall();
+         tokenCall();
         
     },[])
 

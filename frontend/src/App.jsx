@@ -33,6 +33,8 @@ import { useLocation } from 'react-router-dom';
 import EditProfile from './pages/profile/EditProfile';
 import Temp from './pages/Temp';
 
+import { AuthToken } from './redux/slices/Auth';
+
 // import Temp from "../"
 
 function App() {
@@ -41,6 +43,13 @@ function App() {
   const navigate = useNavigate();
 
   const location = useLocation();
+
+  const dispatch = useDispatch();
+
+  const authData = useSelector((state) => state.auth.data);
+  const isLoading = useSelector((state) => state.auth.loading);
+  const isError = useSelector((state) =>state.auth.isError);
+
 
   
 
@@ -51,11 +60,44 @@ function App() {
   const currentPathName = location.pathname.split("/")[1];
 
 
+  async function tokenCall(){
 
-  // useEffect(()=>{
+    await dispatch(AuthToken());
 
+    if (!isLoading) {
+
+        console.log("authData:", authData);
+      
+        if(authData === 400 || isError === 400){
+
+            console.log("Auth data value is ",authData);
+      
+            navigate("/");
     
-  // })
+        }
+      
+        else{
+
+            console.log("home page jane ke liye taiyaar ",authData);
+      
+            navigate("/homepage");
+          
+        }
+   
+    }
+
+}
+
+
+
+
+  useEffect(()=>{
+
+    console.log("hellow");
+
+    tokenCall();
+    
+  },[])
 
 
   return (
@@ -66,10 +108,6 @@ function App() {
 
       <div className='flex w-10/12 gap-7'>
 
-        {/* {
-          currentPathName !== "auth" && <SideFeatureContainer></SideFeatureContainer>
-
-        } */}
 
         {
 
