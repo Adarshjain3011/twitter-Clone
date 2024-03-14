@@ -87,6 +87,81 @@ const getUserProfileDetails = async(userName)=>{
 
 }
 
+
+// **********************************************************************************************************************//
+
+// router.get("/accessChat",Auth,accessChat);
+
+// router.get("/fetchChats",Auth,fetchChats);
+
+// router.post("/createGroupChat",Auth,createGroupChat);
+
+// router.post("/renameGroup",Auth,renameGroup);
+
+// router.post("/addNewUserToGroup",addNewUserToGroup);
+
+
+
+
+const findUser = async(data)=>{
+
+    return await jsonData.get(`/findUser?search=${data}`);
+    
+}
+
+
+
+const accessChat = async(userId)=>{
+
+
+    return await jsonData.get(`/accessChat?userId=${userId}`);
+
+
+
+}
+
+
+
+const fetchChats = async(data)=>{
+
+    return await jsonData.get("/fetchChats");
+
+
+}
+
+const createGroupChat = async(data)=>{
+
+
+    return await jsonData.post("/createGroupChat")
+
+}
+
+
+const renameGroup = async(data)=>{
+
+    return await jsonData.post("/renameGroup")
+
+}
+
+
+const addNewUserToGroup = async(data)=>{
+
+    return await jsonData.post("/addNewUserToGroup");
+
+}
+
+
+
+const createMessage = async(data)=>{
+
+    return await jsonData.post("/createMessage",data);
+
+}
+
+
+
+
+
 const AuthServices = {
 
     authSignup,
@@ -100,11 +175,22 @@ const AuthServices = {
     authTokenLogin,
     updateUserProfile,
     userLogout,
-    getUserProfileDetails
+    getUserProfileDetails,
+
+    accessChat,
+    fetchChats,
+    createGroupChat,
+    findUser,
+    renameGroup,
+    addNewUserToGroup,
+    createMessage
+
 
 }
 
 
 export default AuthServices;
+
+
 
 

@@ -18,13 +18,14 @@ const {
     getAllUserPosts,
     getUserLikedPosts,
     getAllPosts,
+    searchUser
 
                     
 } = require("../controller/Post");
 
 const {Auth} = require("../middleware/auth");
 
-const {userProfileButtonDescribe,performFollowUnfollow} = require("../controller/User")
+const {userProfileButtonDescribe,performFollowUnfollow,findAllUserWhichFollowedEachOther} = require("../controller/User")
 
 router.post("/createPost",Auth,createPost);
 
@@ -57,6 +58,12 @@ router.get("/userProfileButtonDescribe",userProfileButtonDescribe);
 
 router.post("/performFollowUnfollow",performFollowUnfollow);
 
+router.post("/findUser/:search?",Auth,searchUser);
+
+
+
+
+router.get("/findAllUserWhichFollowedEachOther",Auth,findAllUserWhichFollowedEachOther);
 
 
 

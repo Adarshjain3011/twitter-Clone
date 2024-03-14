@@ -52,6 +52,14 @@ const SideFeatureContainer = () => {
 
     }
 
+
+    function moveToMessagesContainer(){
+
+
+        navigate("/messages");
+
+    }
+
     function moveToHome() {
 
         navigate("/profile");
@@ -117,28 +125,28 @@ const SideFeatureContainer = () => {
 
         //  dispatch(AuthToken());
 
-        if (!isLoading) {
+        // if (!isLoading) {
 
-            console.log("authData:", authData);
+        //     console.log("authData:", authData);
           
-            if(authData === 400 || isError === 400){
+        //     if(authData === 400 || isError === 400){
 
-                console.log("Auth data value is ",authData);
+        //         console.log("Auth data value is ",authData);
           
-                navigate("/");
+        //         navigate("/");
         
-            }
+        //     }
           
-            else{
+        //     else{
 
-                console.log("home page jane ke liye taiyaar ",authData);
+        //         console.log("home page jane ke liye taiyaar ",authData);
           
-                navigate("/homepage");
+        //         navigate("/homepage");
               
-            }
+        //     }
        
-        }
-         tokenCall();
+        // }
+        //  tokenCall();
         
     },[])
 
@@ -149,7 +157,7 @@ const SideFeatureContainer = () => {
         { title: "Home", icon: <MdHomeFilled /> },
         { title: "Explore", icon: <FiSearch /> },
         { title: "Notifications", icon: <IoNotifications /> },
-        { title: "Messages", icon: <IoMailOutline /> },
+        { title: "Messages", icon: <IoMailOutline />, onClick: moveToMessagesContainer },
         { title: "Grok", icon: <TbSquareForbid /> },
         { title: "List", icon: <MdHomeFilled /> },
         { title: "Communities", icon: <FiUsers /> },

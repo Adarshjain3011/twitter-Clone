@@ -27,7 +27,23 @@ const {
 
     } = require("../middleware/auth.js");
 
-const User = require("../model/User");
+
+    
+    const User = require("../model/User");
+
+
+
+const {
+
+    findUser,
+    accessChat,
+    fetchChats,
+    createGroupChat
+    ,renameGroup
+    ,addNewUserToGroup,
+    createMessage
+
+    } = require("../controller/ChatController.js")
 
 
 router.post("/signup",signUp);
@@ -99,6 +115,24 @@ router.post("/forgotPassowrd",forgotPassword);
 router.post("/updateUserProfile",Auth,updateUserProfile);
 
 router.get("/getUserProfileDetails",getUserProfileDetails);
+
+
+
+// **************************************************************************************************************************///
+
+// router.get("/findUser/:search?",findUser);
+
+router.get("/accessChat",Auth,accessChat);
+
+router.get("/fetchChats",Auth,fetchChats);
+
+router.post("/createGroupChat",Auth,createGroupChat);
+
+router.post("/renameGroup",Auth,renameGroup);
+
+router.post("/addNewUserToGroup",addNewUserToGroup);
+
+router.post("/createMessage",Auth,createMessage);
 
 
 

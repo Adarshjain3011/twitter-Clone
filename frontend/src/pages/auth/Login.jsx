@@ -52,7 +52,7 @@ const Login = () => {
 
         toast.warning("plz verify your email ");
 
-        navigate("auth/auth-signup");
+        navigate("/auth/auth-signup",{replace:true});
 
 
       }

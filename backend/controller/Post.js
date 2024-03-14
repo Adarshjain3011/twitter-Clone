@@ -1509,6 +1509,64 @@ exports.commentOnPost = async (req,res)=>{
 
 
 
+exports.searchUser = async(req,res)=>{
+
+    try{
+
+        let name = req.query.search;
+
+        console.log(name);
+
+        if(!name){
+
+            return res.status(400).json({
+    
+                success: false,
+                data: null,
+                message: "all fileds are not fullfill ",
+    
+            })
+
+        }
+
+        console.log(req.user._id);
+
+        const findUser = await User.find({
+
+            name: { $regex: name, $options: "i" }, // Case-insensitive regex search for name containing the substring
+
+        });
+
+
+        console.log(findUser);
+
+
+        return res.status(200).json({
+
+            success:true,
+            data:findUser,
+            message:"search result of user ",
+
+        })
+
+
+    }
+    catch(error){
+
+        console.log(error);
+        
+        return res.status(400).json({
+
+            success: false,
+            data: null,
+            message: "their is something error while find the user ",error,
+
+        })
+
+    }
+}
+
+
 
 
 

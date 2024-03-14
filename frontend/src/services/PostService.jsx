@@ -50,6 +50,20 @@ const performFollowUnfollow = async(originalUser,newUser)=>{
 
 }
 
+const findUser = async(data)=>{
+
+    return jsonData.post(`/findUser?search=${data}`);
+
+}
+
+
+const findAllUserWhichFollowedEachOther = async()=>{
+
+    return jsonData.get("/findAllUserWhichFollowedEachOther");
+    
+
+}
+
 
 const PostServices = {
 
@@ -59,7 +73,9 @@ const PostServices = {
     getUserLikedPosts,
     getAllPosts,
     userProfileButtonDescribe,
-    performFollowUnfollow
+    performFollowUnfollow,
+    findUser,
+    findAllUserWhichFollowedEachOther
 
 }
 

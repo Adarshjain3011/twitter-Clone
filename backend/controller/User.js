@@ -5,6 +5,7 @@ const { UploadImageToCloudinary } = require("../utils/Cloudinary")
 
 require("dotenv").config();
 
+
 exports.createFollow = async (req, res) => {
 
     try {
@@ -127,6 +128,7 @@ exports.createFollow = async (req, res) => {
 
 
 
+
 exports.updateUserProfile = async (req, res) => {
 
     try {
@@ -224,6 +226,8 @@ exports.updateUserProfile = async (req, res) => {
 
 
 
+
+
 exports.getUserProfileDetails = async (req, res) => {
 
 
@@ -300,6 +304,11 @@ exports.getUserProfileDetails = async (req, res) => {
         })
     }
 }
+
+
+
+
+
 
 
 
@@ -419,6 +428,9 @@ exports.userProfileButtonDescribe = async (req, res) => {
 
     }
 }
+
+
+
 
 
 
@@ -551,6 +563,84 @@ exports.performFollowUnfollow = async (req, res) => {
         })
     }
 }
+
+
+
+
+
+
+
+
+exports.findAllUserWhichFollowedEachOther = async(req,res)=>{
+
+
+    try{
+
+        let  userId = req.user._id;
+
+        console.log(userId);
+
+        if(!userId){
+
+            return res.status(400).json({
+
+                success:false,
+                data:null,
+                message:"user id is not found "
+    
+            })
+
+        }
+
+        // let findAllUsers = await User.find({
+
+
+        //         followers:userId,
+        //         following:userId
+
+
+        // }).populate("name email userImage","-followers -following -posts -addtionalDetails -BookMarks -likes -password")
+
+        let findAllUsers = await User.find({
+
+            followers: userId,
+            following: userId
+
+        }).select('name email userImage');
+
+        
+
+
+        console.log("all users are ",findAllUsers);
+
+
+        return res.status(200).json({
+
+
+            success:true,
+            data:findAllUsers,
+            message:" successfully find All User Which Followed Each Other"
+
+        })
+
+    }
+    catch(error){
+
+        console.log(error);
+
+        return res.status(400).json({
+
+            success:false,
+            data:null,
+            message:"their is something error while finding find All User Which Followed Each Other"
+
+        })
+
+    }
+}
+
+
+
 
 
 

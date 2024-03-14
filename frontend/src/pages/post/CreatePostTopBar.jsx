@@ -9,8 +9,11 @@ const CreatePostTopBar = () => {
     const [currentState, setCurrentState] = useState("for you");
 
     return (
-        <div className="bg-black flex border border-white/15 h-16 justify-center items-center sticky top-0 z-10">
+
+        <div className="bg-black flex border border-white/15 h-16 justify-center items-center fixed top-0 z-10 w-[558px] left-[28.2%]">
+
             <div className="flex w-[90%] relative">
+
                 <div
                     className="flex flex-col justify-center items-center text-white font-bold trans w-[50%] hover:bg-white/10 h-16 "
                     onClick={() => setCurrentState("for you")}

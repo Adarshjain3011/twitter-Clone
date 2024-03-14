@@ -64,6 +64,7 @@ const Profile = () => {
     console.log("new time stamp ", timestamp.toLocaleString('en-US', { month: 'long' }));
 
     const month = timestamp.toLocaleString('en-US', { month: 'long' });
+
     const year = timestamp.getFullYear();
     // console.log("month ",timestamp.getFullYear());
 
@@ -120,7 +121,10 @@ const Profile = () => {
         }
         catch (error) {
 
+            navigate("/");
+
             console.log(error);
+
 
         }
     }
@@ -142,7 +146,7 @@ const Profile = () => {
         }
     }
 
-
+    
 
     function clickHandler(title) {
 
@@ -152,10 +156,12 @@ const Profile = () => {
     }
 
 
-
+    
 
     async function followUnfollowHandler(newUser, originalUser) {
+
         try {
+
             let response = await PostServices.performFollowUnfollow(newUser, originalUser);
             const newData = Object.values((response?.data).data)[0];
     
@@ -205,7 +211,7 @@ const Profile = () => {
 
         <div className='w-full'>
 
-            <div className='w-full relative flex flex-col border border-zinc-700'>
+            <div className='w-[550px] relative flex flex-col border border-zinc-700'>
 
                 <div className='flex items-center gap-8 pl-2 sticky top-0 w-full bg-black z-10'>
 

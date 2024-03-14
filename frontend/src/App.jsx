@@ -34,6 +34,8 @@ import EditProfile from './pages/profile/EditProfile';
 import Temp from './pages/Temp';
 
 import { AuthToken } from './redux/slices/Auth';
+import SearchUser from './pages/messages/SearchUser';
+import ChatPage from './pages/messages/ChatPage';
 
 // import Temp from "../"
 
@@ -52,7 +54,6 @@ function App() {
 
 
   
-
   console.log("current path ka name ", location.pathname);
 
   console.log("current path ka name ", location.pathname.split("/")[1]);
@@ -137,14 +138,18 @@ function App() {
 
           </Route>
 
-            <Route path='/temp' element={<Temp></Temp>}></Route>
+          <Route path='/temp' element={<Temp></Temp>}></Route>
 
           <Route path='/homepage' element={<HomePage></HomePage>}></Route>
 
           <Route path='/profile/:name' element={<Profile></Profile>}></Route>
 
           <Route path='/editProfile' element={<EditProfile></EditProfile>}></Route>
+        
+          <Route path='/messages' element={<SearchUser></SearchUser>}></Route>
 
+          <Route path='/chatPage' element={<ChatPage></ChatPage>}></Route>
+          
 
         </Routes>
 

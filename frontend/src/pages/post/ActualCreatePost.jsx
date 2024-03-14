@@ -60,7 +60,7 @@ const ActualCreatePost = () => {
 
         // forms.append("description of user post ", textAreaData);
 
-        forms.append("description",textAreaData);
+        forms.append("description", textAreaData);
 
         for (const file of actualImage) {
 
@@ -187,7 +187,7 @@ const ActualCreatePost = () => {
                 console.log("Textarea value:", event.target.value);
 
                 try {
-                    
+
                     console.log("textAreaData updated successfully.");
                 } catch (error) {
                     console.error("Error updating textAreaData:", error);
@@ -202,148 +202,152 @@ const ActualCreatePost = () => {
 
     return (
 
-        <div className='bg-black flex border border-white/15 w-full relative h-auto'>
+        <div className='bg-black w-full mt-16'>
 
+            <div className='flex relative h-auto w-[550px]'>
 
-            <div className='w-[11%] flex rounded-full relative pl-3 pt-3'>
+                <div className='w-[9%] flex rounded-full relative pl-3 pt-3'>
 
-                <div className='w-[40px] h-[40px] rounded-full bg-white/75 flex justify-center items-center'>
+                    <div className='w-[40px] h-[40px] rounded-full bg-white/75 flex justify-center items-center'>
 
-                    <FaUser></FaUser>
+                        <FaUser></FaUser>
+
+                    </div>
 
                 </div>
 
-            </div>
-
-            <div className='w-[90%] relative flex flex-col pt-4 gap-2'>
+                <div className='w-[500px] relative flex flex-col pt-4 gap-2'>
 
 
-                {/* <div className='relative h-auto'> */}
+                    {/* <div className='relative h-auto'> */}
 
 
-                <textarea type='text' placeholder='What is happening?'
-                    className='outline-none border-none textarea
+                    <textarea type='text' placeholder='What is happening?'
+                        className='outline-none border-none textarea
                     bg-black overflow-y-hidden
                      text-2xl w-[300px] min-h-[30px]' onInput={event => autoExpandTextarea(event.target)}></textarea>
 
 
-                {/* </div> */}
+                    {/* </div> */}
 
-                {/* <p>hellow </p> */}
+                    {/* <p>hellow </p> */}
 
-                <div className='flex overflow-auto'>
+                    <div className='flex overflow-auto'>
 
-                    <div className='flex overflow-x-auto relative w-[600px]  max-w-maxContent gap-4'>
+                        <div className='flex overflow-x-auto relative w-[550px]  max-w-maxContent gap-4'>
 
-                        {
-                            imagesUrl.length > 0 && imagesUrl.map((data, index) => (
-
-
-                                <div className='relative w-[580px] h-[200px] rounded-xl'>
-
-                                    <MdDelete className='absolute right-5 w-[40px] h-[40px] text-black top-0' onClick={() => removeImageHandler(data, index)}></MdDelete>
+                            {
+                                imagesUrl.length > 0 && imagesUrl.map((data, index) => (
 
 
+                                    <div className='relative w-[400px] h-[200px] rounded-xl'>
 
-                                    <img src={data} className=' max-w-[580px] min-w-[580px] h-[200px] bg-cover rounded-xl'></img>
-
-                                </div>
-
-                            ))
-                        }
-
-                    </div>
-
-                </div>
+                                        <MdDelete className='absolute right-5 w-[40px] h-[40px] text-black top-0' onClick={() => removeImageHandler(data, index)}></MdDelete>
 
 
-                <div className='flex font-bold relative items-baseline gap-1'>
 
-                    <BiWorld className='text-blue-700 text-end'></BiWorld>
-                    <p className='text-blue-700'>Everyone can reply</p>
+                                        <img src={data} className=' max-w-[400px] min-w-[400px] h-[200px] bg-cover rounded-xl'></img>
 
-                </div>
+                                    </div>
 
-                <div className='w-full bg-white/55 h-1 '>
-
-                </div>
-
-                <div className='flex relative justify-between'>
-
-                    {/* all logos image  */}
-                    <div className='flex gap-3'>
-
-
-                        <abbr title='image' className='text-start '>
-
-                            <div className='w-[30px] h-[30px] rounded-full hover:bg-slate-500/85 flex justify-center items-center'>
-
-                                <CiImageOn id='fileButton' onClick={fileAccessHandler}></CiImageOn>
-
-                            </div>
-
-
-                        </abbr>
-
-                        <abbr title='gif'>
-
-                            <div className='w-[30px] h-[30px] rounded-full hover:bg-slate-500/85 flex justify-center items-center'>
-
-                                <img src={gif} alt="" className=' bg-white/30 w-[20px] h-[20px]' />
-
-                            </div>
-
-
-                        </abbr>
-
-                        <abbr title="emoji">
-
-                            <div className='w-[30px] h-[30px] rounded-full hover:bg-slate-500/85 flex justify-center items-center'>
-
-                                <MdEmojiEmotions></MdEmojiEmotions>
-
-                            </div>
-
-
-                        </abbr>
-
-                        <abbr title='shedule' className=''>
-
-                            <div className='w-[30px] h-[30px] rounded-full hover:bg-slate-500/85 flex justify-center items-center'>
-
-                                <img src={shedule} alt="" className=' bg-white/30 w-[20px] h-[20px]' />
-
-                            </div>
-
-
-                        </abbr>
-
-
-                        <div className='w-[30px] h-[30px] rounded-full hover:bg-slate-500/85 flex justify-center items-center'>
-
-                            <FaLocationDot></FaLocationDot>
+                                ))
+                            }
 
                         </div>
 
                     </div>
-                    {/* post ke button wala div */}
 
-                    <div>
 
-                        <button
+                    <div className='flex font-bold relative items-baseline gap-1'>
 
-                            className='w-[80px] border-2 
+                        <BiWorld className='text-blue-700 text-end'></BiWorld>
+                        <p className='text-blue-700'>Everyone can reply</p>
+
+                    </div>
+
+                    <div className='w-full bg-white/55 h-1 '>
+
+                    </div>
+
+                    <div className='flex relative justify-between'>
+
+                        {/* all logos image  */}
+                        <div className='flex gap-3'>
+
+
+                            <abbr title='image' className='text-start '>
+
+                                <div className='w-[30px] h-[30px] rounded-full hover:bg-slate-500/85 flex justify-center items-center'>
+
+                                    <CiImageOn id='fileButton' onClick={fileAccessHandler}></CiImageOn>
+
+                                </div>
+
+
+                            </abbr>
+
+                            <abbr title='gif'>
+
+                                <div className='w-[30px] h-[30px] rounded-full hover:bg-slate-500/85 flex justify-center items-center'>
+
+                                    <img src={gif} alt="" className=' bg-white/30 w-[20px] h-[20px]' />
+
+                                </div>
+
+
+                            </abbr>
+
+                            <abbr title="emoji">
+
+                                <div className='w-[30px] h-[30px] rounded-full hover:bg-slate-500/85 flex justify-center items-center'>
+
+                                    <MdEmojiEmotions></MdEmojiEmotions>
+
+                                </div>
+
+
+                            </abbr>
+
+                            <abbr title='shedule' className=''>
+
+                                <div className='w-[30px] h-[30px] rounded-full hover:bg-slate-500/85 flex justify-center items-center'>
+
+                                    <img src={shedule} alt="" className=' bg-white/30 w-[20px] h-[20px]' />
+
+                                </div>
+
+
+                            </abbr>
+
+
+                            <div className='w-[30px] h-[30px] rounded-full hover:bg-slate-500/85 flex justify-center items-center'>
+
+                                <FaLocationDot></FaLocationDot>
+
+                            </div>
+
+                        </div>
+                        {/* post ke button wala div */}
+
+                        <div>
+
+                            <button
+
+                                className='w-[80px] border-2 
                             bg-sky-500 p-1
                             font-bold rounded-full'
-                            onClick={createPostHandler}>
-                            post
+                                onClick={createPostHandler}>
+                                post
 
-                        </button>
+                            </button>
+
+                        </div>
 
                     </div>
 
                 </div>
 
+                
             </div>
 
 

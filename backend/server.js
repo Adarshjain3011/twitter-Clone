@@ -103,23 +103,23 @@ app.use(cors({
 app.use(express.urlencoded({ extended:true}));
 
 
-// app.get("/api/v1",(req,res)=>{
-
-//     res.send("<h1>hellow </h1>");
-
-// })
 
 // mount the routes 
 
-app.get("/",(req,res)=>{
 
+
+
+app.get("/",(req,res)=>{
+    
     res.send("<h1>hellow </h1>");
 
 })
 
+
+
 app.get('/sample', (req, res) => {
     res.json({ message: 'This is a sample API response' });
-  });
+});
 
 
 app.use("/api/v1",Routes);
@@ -130,19 +130,19 @@ app.use("/api/v1",Post);
 
 // 
 
- dbConnect();
+dbConnect();
 
 CloudinaryConnect();
 
 
 // app.listen(process.env.PORT,()=>{
-
-//     console.log("app running successfully ");
-
-// })
-
-
-
+    
+    //     console.log("app running successfully ");
+    
+    // })
+    
+    
+    
 
 
 app.listen(process.env.PORT,()=>{

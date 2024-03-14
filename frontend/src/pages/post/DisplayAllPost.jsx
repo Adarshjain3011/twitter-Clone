@@ -228,7 +228,7 @@ const DisplayAllPost = ({ userDetails, setUserDetails, setClick, click }) => {
     return (
 
 
-        <div>
+        <div className=' w-full '>
 
             {
 
@@ -242,7 +242,7 @@ const DisplayAllPost = ({ userDetails, setUserDetails, setClick, click }) => {
                 hasMore={hasMore}
                 loader={<ContentLoaders></ContentLoaders>}
             >
-                <div className='bg-black flex flex-col border border-white/20 w-full h-full'>
+                <div className='bg-black flex flex-col border border-white/20 w-[600px] h-full relative'>
 
 
                     {
@@ -250,10 +250,10 @@ const DisplayAllPost = ({ userDetails, setUserDetails, setClick, click }) => {
                         items.map((data) => (
 
 
-                            <div className='bg-black flex border border-white/15 w-full relative h-auto'>
+                            <div className='bg-black flex border border-white/15 relative h-auto w-[600px]'>
 
 
-                                <div>
+                                <div className='relative'>
 
                                     {
 
@@ -284,7 +284,7 @@ const DisplayAllPost = ({ userDetails, setUserDetails, setClick, click }) => {
 
                                                     <div className='flex overflow-auto'>
 
-                                                        <div className='flex overflow-x-auto relative w-[600px]  max-w-maxContent gap-4'>
+                                                        <div className='flex overflow-x-auto relative w-[500px]  max-w-maxContent gap-4'>
 
                                                             {
                                                                 postData?.postUrl?.map((data, index) => (
@@ -295,10 +295,10 @@ const DisplayAllPost = ({ userDetails, setUserDetails, setClick, click }) => {
                                                                         <MdDelete className='absolute right-5 w-[40px] h-[40px] text-black top-0'></MdDelete>
 
                                                                         {
-                                                                            imageFileType.includes(data.split(".")[data.split(".").length - 1]) ? (<img src={data} className=' max-w-[580px]
+                                                                            imageFileType.includes(data.split(".")[data.split(".").length - 1]) ? (<img src={data} className=' max-w-[400px]
 
-                                                                     min-w-[580px] h-[200px] bg-cover rounded-xl'></img>) : (<video className=' max-w-[580px]
-                                                                      min-w-[580px] h-[200px] bg-cover rounded-xl' width="320" height="240" controls>
+                                                                     min-w-[400px] h-[200px] bg-cover rounded-xl'></img>) : (<video className=' max-w-[400px]
+                                                                      min-w-[400px] h-[200px] bg-cover rounded-xl' width="320" height="240" controls>
 
                                                                                 <source src={data} type="video/webm"></source>
 
