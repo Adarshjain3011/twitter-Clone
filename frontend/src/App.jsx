@@ -37,6 +37,8 @@ import { AuthToken } from './redux/slices/Auth';
 import SearchUser from './pages/messages/SearchUser';
 import ChatPage from './pages/messages/ChatPage';
 
+import Notification from './pages/notification/Notification';
+
 // import Temp from "../"
 
 function App() {
@@ -137,6 +139,9 @@ function App() {
             <Route path='auth-OtpChangePassowrd' element={<OtpChangePassowrd></OtpChangePassowrd>}></Route>
 
           </Route>
+
+
+          <Route path='/Notification' element={<Notification></Notification>}></Route>
 
           <Route path='/temp' element={<Temp></Temp>}></Route>
 

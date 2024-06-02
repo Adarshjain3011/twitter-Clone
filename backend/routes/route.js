@@ -4,46 +4,40 @@ const express = require("express");
 
 const router = express.Router();
 
-const {
-    
-        signUp,
-        logIn,
-        sendOtp,
-        resendOtp,
-        VerifyOtp,
-        logOut,
-        resetPassword,
-        forgotPassword,
-        
+const User = require("../model/User");
 
 
-    } = require("../controller/Auth");
-
-    const {updateUserProfile,getUserProfileDetails} = require("../controller/User.js")
+    //******************************************************************* all middlewares *************************************************
 
 const {
 
     Auth
 
-    } = require("../middleware/auth.js");
+    } = require("../middleware/auth.js");  
 
 
-    
-    const User = require("../model/User");
 
+//********************************************************* All user route with controller ************************************************************ */
+
+const {updateUserProfile,getUserProfileDetails, getUserDetails} = require("../controller/User.js");
 
 
 const {
+    
+    signUp,
+    logIn,
+    sendOtp,
+    resendOtp,
+    VerifyOtp,
+    logOut,
+    resetPassword,
+    forgotPassword,
+    
 
-    findUser,
-    accessChat,
-    fetchChats,
-    createGroupChat
-    ,renameGroup
-    ,addNewUserToGroup,
-    createMessage
 
-    } = require("../controller/ChatController.js")
+} = require("../controller/Auth");
+
+
 
 
 router.post("/signup",signUp);
@@ -117,10 +111,30 @@ router.post("/updateUserProfile",Auth,updateUserProfile);
 router.get("/getUserProfileDetails",getUserProfileDetails);
 
 
+router.get("/getUserDetails",Auth,getUserDetails);
 
-// **************************************************************************************************************************///
 
-// router.get("/findUser/:search?",findUser);
+
+// ***********************************************************************************************************************************//
+
+
+// *****************************************************Chat Related Route and controller  *********************************************************************///
+
+
+
+const {
+
+    findUser,
+    accessChat,
+    fetchChats,
+    createGroupChat
+    ,renameGroup
+    ,addNewUserToGroup,
+    createMessage
+
+    } = require("../controller/ChatController.js");
+
+
 
 router.get("/accessChat",Auth,accessChat);
 
@@ -133,6 +147,33 @@ router.post("/renameGroup",Auth,renameGroup);
 router.post("/addNewUserToGroup",addNewUserToGroup);
 
 router.post("/createMessage",Auth,createMessage);
+
+
+
+
+
+
+// ***************************************************** Notification related route and controller  ******************************************************************//
+
+
+
+const
+    {
+
+        createNotification,
+        getAllNotification
+    
+    } = require("../controller/NotificationController.js");
+
+
+router.post("/createNotification",Auth,createNotification);
+
+router.get("/getAllNotification",Auth,getAllNotification);
+
+
+
+// ******************************************************************************************************************************//
+
 
 
 

@@ -116,6 +116,22 @@ const SideFeatureContainer = () => {
         }
 
     }
+    
+
+
+    function moveToNotificationPage(){
+
+        navigate("/Notification");
+        
+    }
+
+
+    function moveToHomePage(){
+
+
+        navigate("/homepage");
+
+    }
 
 
 
@@ -154,9 +170,9 @@ const SideFeatureContainer = () => {
 
     const SideFeatures = [
 
-        { title: "Home", icon: <MdHomeFilled /> },
+        { title: "Home", icon: <MdHomeFilled />, onClick: moveToHomePage },
         { title: "Explore", icon: <FiSearch /> },
-        { title: "Notifications", icon: <IoNotifications /> },
+        { title: "Notifications", icon: <IoNotifications />, onClick: moveToNotificationPage },
         { title: "Messages", icon: <IoMailOutline />, onClick: moveToMessagesContainer },
         { title: "Grok", icon: <TbSquareForbid /> },
         { title: "List", icon: <MdHomeFilled /> },
@@ -172,18 +188,18 @@ const SideFeatureContainer = () => {
 
         <div className='w-full relative min-h-screen'>
 
-            <div className='flex flex-col w-full mt-3 sticky top-5 gap-[1.5rem]'>
+            <div className='flex flex-col w-full mt-3 sticky top-5 '>
 
 
-                <div className='flex flex-col gap-2'>
+                <div className='flex flex-col gap-2 '>
 
-                    <div className='w-[25px] h-[25px] font-bold ml-2'>
+                    <div className='w-[20px] h-[20px] font-bold ml-2'>
 
                         <img src={ximage} alt="" className='w-full h-full bg-cover' />
 
                     </div>
 
-                    <div className='flex flex-col gap-0'>
+                    <div className='flex flex-col gap-2'>
 
 
                         {
@@ -191,17 +207,17 @@ const SideFeatureContainer = () => {
                             SideFeatures.map((data) => (
 
 
-                                <div className='flex gap-6 hover:bg-slate-600 p-3 rounded-full ' onClick={data.onClick}>
+                                <div className='flex will-change-transform gap-4 p-1 items-center hover:bg-slate-600  rounded-full ' onClick={data.onClick}>
 
 
 
-                                    <span className='text-3xl'>
+                                    <span className='text-xl'>
 
                                         {data.icon}
 
                                     </span>
 
-                                    <h1 className='font-semibold text-xl'>{data.title}</h1>
+                                    <h1 className='font-medium text-base text-center'>{data.title}</h1>
 
 
                                 </div>
@@ -211,8 +227,8 @@ const SideFeatureContainer = () => {
 
                     </div>
 
-                    <button type='Submit' className='w-[250px] border-2 
-                     bg-sky-500 p-3 rounded-full
+                    <button type='Submit' className='inline-block border-2 
+                     bg-sky-500  rounded-full p-1
                         font-bold'
                         onClick={moveToProfileContainer}>Post
 
@@ -221,15 +237,15 @@ const SideFeatureContainer = () => {
                 </div>
                 
 
-                <div className='flex items-center p-3 rounded-full justify-between h-full
-                    transition transform hover:-translnoneate-y-1
-                hover:bg-white/10 duration-500
-                   motion-reduce:transition-none motion-reduce:hover:transform-'
+                <div className='flex items-center p-2 rounded-full justify-between h-full gap-2
+                                transition transform hover:-translnoneate-y-1
+                                hover:bg-white/10 duration-500
+                                motion-reduce:transition-none motion-reduce:hover:transform-'
                     onClick={()=>setOpenLogoutDiv(!openLogoutDiv)}>
 
-                    <div className='flex justify-center items-center gap-4'>
+                    <div className='flex justify-center items-center gap-2'>
 
-                        <div className='w-[40px] h-[40px]'>
+                        <div className='w-[30px] h-[30px]'>
 
                             <img src={userImage} alt="" className='w-full h-full bg-cover rounded-full'/>
                             
@@ -237,7 +253,7 @@ const SideFeatureContainer = () => {
 
                         <div>
 
-                            <h1 className='text-center font-semibold text-xl'>{(authData?.data)?.data?.name}</h1>
+                            <h1 className='text-center font-semibold text-sm text-nowrap'>{(authData?.data)?.data?.name}</h1>
 
                         </div>
                         

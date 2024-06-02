@@ -172,7 +172,7 @@ const CreatePost = () => {
 
         <div className='w-full'>
 
-            <div className='bg-black flex flex-col border-2 border-white/15 h-full relative w-[550px]'>
+            <div className='bg-black flex flex-col border-2 border-white/15 h-full relative w-[500px]'>
 
                 {/*  top div  */}
 

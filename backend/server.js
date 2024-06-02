@@ -1,6 +1,9 @@
 const express = require("express");
+const http = require("http");
 
 const app = express();
+
+const { Server } = require('socket.io');
 
 const dbConnect = require("./config/Database");
 
@@ -22,9 +25,6 @@ const cors = require("cors");
 
 // socket metrials ----->
 
-const http = require("http");
-
-const {Server} = require('socket.io');
 
 // const path = require('path');
 
@@ -32,45 +32,71 @@ const {Server} = require('socket.io');
 
 const server = http.createServer(app);
 
-const io = new Server(server,{ cors : true});
+// const io = new Server(server, { cors: true });
 
-// const emailToSocketMapping = new Map();
+const io = new Server(server, {
+    cors: {
 
+        origin: "*"
 
-io.on('connection',(socket)=>{
-    
-    console.log("new socket id ",socket.id);
-    
-    socket.on("join-room",(data)=>{
+    }
+});
 
-        const { roomId,email } = data; 
-
-        console.log("new user ",email,"joined",roomId);
-
-        emailToSocketMapping.set(email,socket.id);
-        
-        socket.join(roomId); // join roomid 
-
-        socket.broadcast.to(roomId).emit("user-joined",{ email });
-
-        
-        // io.emit("message",message);
-
-        
-    })
-
-    
-})
+// Maintain a map of user IDs to WebSocket connections
+const connectedUsers = new Map();
 
 
+io.on("connection", (socket) => {
+
+    console.log("New client connected");
+
+    // When a user connects, add them to the connected users map
+
+    socket.on("login", (userId) => {
+
+        console.log("user is sucessfully login ", userId);
+
+        connectedUsers.set(userId, socket);
+
+        io.emit()
+
+    });
+
+    // When a user disconnects, remove them from the connected users map
+
+    socket.on("disconnect", () => {
+
+        for (const [key, value] of connectedUsers.entries()) {
+
+            if (value === socket) {
+
+                connectedUsers.delete(key);
+                break;
+
+            }
+        }
+    });
 
 
+    // Handle sending messages
 
-// server.listen(process.env.PORT,()=>{
+    socket.on("sendMessage", ({ content, receiverId }) => {
 
-//     console.log("web server running ");
+        // Save the message to the database
+        // Broadcast the message to relevant clients
 
-// })
+        console.log("server side data recieveing ", content, receiverId);
+
+
+        // io.emit("newMessage", { content, receiverId }); // Emit content and receiverId as the message payload
+
+        io.emit("newMessage", { content }); // Emit content and receiverId as the message payload
+
+    });
+
+    // Handle other events...
+});
+
 
 
 
@@ -80,27 +106,27 @@ app.use(cookieParser());
 app.use(express.json());
 
 
-app.use(express.json({strict: false}));
+app.use(express.json({ strict: false }));
 
 app.use(fileUpload({
-    
-    useTempFiles:true,
-    tempFileDir:"/tmp"
-    
+
+    useTempFiles: true,
+    tempFileDir: "/tmp"
+
 }));
 
 
 app.use(cors({
-    
-    origin:['http://localhost:3000'],  // this is frontend url path jo bhi request frontend se ish path se aaa rahi hai ushe aaapko entertain karna hai 
-    
-    credentials:true, // for allow the cookie from sending across backend 
-    
+
+    origin: ['http://localhost:3000'],  // this is frontend url path jo bhi request frontend se ish path se aaa rahi hai ushe aaapko entertain karna hai 
+
+    credentials: true, // for allow the cookie from sending across backend 
+
 }));
 
 
 
-app.use(express.urlencoded({ extended:true}));
+app.use(express.urlencoded({ extended: true }));
 
 
 
@@ -109,22 +135,42 @@ app.use(express.urlencoded({ extended:true}));
 
 
 
-app.get("/",(req,res)=>{
-    
+app.get("/", (req, res) => {
+
     res.send("<h1>hellow </h1>");
 
 })
 
 
+app.use("/api/v1", Routes);
 
-app.get('/sample', (req, res) => {
-    res.json({ message: 'This is a sample API response' });
+app.use("/api/v1", Post);
+
+// Endpoint to check if a user is online
+app.get("/api/v1/:userId/online", (req, res) => {
+
+    const { userId } = req.params;
+
+    console.log("req ke params ke andar user id hai ", userId);
+
+    const isOnline = connectedUsers.has(userId);
+
+    // res.json({ userId, isOnline });
+
+    console.log(connectedUsers);
+
+    res.status(200).json({
+
+        success: true,
+        data: { userId, isOnline },
+        message: "check user onlne status ",
+
+    })
+
+
 });
 
 
-app.use("/api/v1",Routes);
-
-app.use("/api/v1",Post);
 
 
 
@@ -136,20 +182,22 @@ CloudinaryConnect();
 
 
 // app.listen(process.env.PORT,()=>{
-    
-    //     console.log("app running successfully ");
-    
-    // })
-    
-    
-    
+
+//     console.log("app running successfully ");
+
+// })
 
 
-app.listen(process.env.PORT,()=>{
+
+
+
+server.listen(process.env.PORT, () => {
 
     console.log("web server running ");
 
 })
+
+
 
 
 

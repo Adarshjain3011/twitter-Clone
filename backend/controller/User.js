@@ -1,7 +1,9 @@
 const AdditionalDetails = require("../model/AdditionalDetails");
 const User = require("../model/User");
 
-const { UploadImageToCloudinary } = require("../utils/Cloudinary")
+const { UploadImageToCloudinary } = require("../utils/Cloudinary");
+
+const Notification = require("../model/NotificationSchema");
 
 require("dotenv").config();
 
@@ -482,10 +484,14 @@ exports.performFollowUnfollow = async (req, res) => {
 
         let upadateNewUserFollowing;
 
+        let content="";
+
 
         if (isNewUserAlreadyFollowedOriginalUser && isOriginalUserAlreadyHasNewUser) {
 
             // update Original user Followers 
+
+            // original user ki followers mai se new user  udha do 
 
             updateOriginalUserFollowers = await User.findByIdAndUpdate(originalUserExists._id, {
 
@@ -498,6 +504,7 @@ exports.performFollowUnfollow = async (req, res) => {
 
             // upadte new user following 
 
+            // new user ki following mai se udha do original user ko 
 
             upadateNewUserFollowing = await User.findByIdAndUpdate(newUserExists._id, {
 
@@ -507,6 +514,9 @@ exports.performFollowUnfollow = async (req, res) => {
 
                 }
             }, { new: true });
+
+
+            content+=`${newUserExists?.name} unfollow you `;
 
 
         }
@@ -514,6 +524,8 @@ exports.performFollowUnfollow = async (req, res) => {
 
             // update Original user Followers 
 
+            // original user ki followers mai se new user add kar  do 
+
             updateOriginalUserFollowers = await User.findByIdAndUpdate(originalUserExists._id, {
 
                 $push: {
@@ -525,6 +537,8 @@ exports.performFollowUnfollow = async (req, res) => {
 
             // upadte new user following 
 
+            // new user ki following mai add kar  do original user ko 
+
             upadateNewUserFollowing = await User.findByIdAndUpdate(newUserExists._id, {
 
                 $push: {
@@ -534,13 +548,30 @@ exports.performFollowUnfollow = async (req, res) => {
                 }
             }, { new: true });
 
+            content+=`${newUserExists?.name} started following you `;
+
         }
+
+
+        // now we have to create new notification after performing following and unfolllow 
+
+
+        let newNotification = await Notification.create({
+
+            senderId:newUserExists._id,
+            recieverId:originalUserExists._id,
+            content:content,
+
+
+        })
+
+
 
         return res.status(200).json({
 
             success:true,
             data:{upadateNewUserFollowing,updateOriginalUserFollowers},
-            message:"follow and unfollow handled successfully ",
+            message:"follow and unfollow handled successfully and notificatiion will also send  ",
 
         })
 
@@ -578,7 +609,7 @@ exports.findAllUserWhichFollowedEachOther = async(req,res)=>{
 
         let  userId = req.user._id;
 
-        console.log(userId);
+        console.log("user id is ",req.user._id);
 
         if(!userId){
 
@@ -589,17 +620,8 @@ exports.findAllUserWhichFollowedEachOther = async(req,res)=>{
                 message:"user id is not found "
     
             })
-
         }
 
-        // let findAllUsers = await User.find({
-
-
-        //         followers:userId,
-        //         following:userId
-
-
-        // }).populate("name email userImage","-followers -following -posts -addtionalDetails -BookMarks -likes -password")
 
         let findAllUsers = await User.find({
 
@@ -608,8 +630,7 @@ exports.findAllUserWhichFollowedEachOther = async(req,res)=>{
 
         }).select('name email userImage');
 
-        
-
+    
 
         console.log("all users are ",findAllUsers);
 
@@ -643,6 +664,106 @@ exports.findAllUserWhichFollowedEachOther = async(req,res)=>{
 
 
 
+
+
+exports.getAllUserFollowingPosts = async(req,res)=>{
+
+
+    try{
+
+        let  userId = req.user._id;
+
+        console.log(userId);
+
+        if(!userId){
+
+            return res.status(400).json({
+
+                success:false,
+                data:null,
+                message:"user id is not found "
+    
+            })
+        }
+
+
+
+    }
+    catch(error){
+
+        console.log(error);
+
+        
+        return res.status(400).json({
+
+            success:false,
+            data:null,
+            message:"their is  "
+
+        })
+    }
+}
+
+
+
+
+
+
+
+exports.getUserDetails = async (req, res) => {
+
+
+    try {
+
+        
+
+        console.log("helow brother ");
+
+       const userId = req.user._id;
+
+
+        console.log("user name is ", userId);
+
+
+        if (!userId) {
+
+            return res.status(400).json({
+
+                success: false,
+                data: null,
+                message: "fileds are empty "
+
+            })
+
+        }
+
+        
+        let userExists = await User.findById(userId);
+
+
+
+        return res.status(200).json({
+
+            success: true,
+            data: userExists,
+            message: "user data fetch successfully ",
+
+        })
+
+    }
+    catch (error) {
+
+        console.log(error);
+
+        return res.status(400).json({
+
+            success: false,
+            data: null,
+            message: "some error while fetching user data"
+
+        })
+    }
+}
 
 
 

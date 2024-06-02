@@ -38,11 +38,14 @@ const Profile = () => {
 
     const [originalUserData, setOriginalUserData] = useState([]);
 
-    const [newAuthData, setAuthData] = useState((authData?.data)?.data);
-
+    // const [newAuthData, setAuthData] = useState((authData?.data)?.data);
+    
+    const [newAuthData, setAuthData] = useState([]);
 
 
     console.log("original user data ", originalUserData);
+    console.log("visitor user data ",newAuthData);
+
 
     const [userPostsLength, setUserPostsLength] = useState('');
 
@@ -84,11 +87,14 @@ const Profile = () => {
 
     let newUser = (authData?.data)?.data.name;
 
-    console.log("joh profile visit karne aaaya hai ", newUser);
+    console.log("joh profile visit karne aaaya hai ", (authData?.data));
+
+
+    console.log("auth ka data",newAuthData);
 
     // console.log("joh profile visit karne aayaa hai ushka data ",(authData?.data)?.data['following']);
 
-    console.log("jishki profile hai  ", originalUser);
+    console.log("jishki profile hai  ", originalUserData);
 
 
 
@@ -129,6 +135,40 @@ const Profile = () => {
         }
     }
 
+    
+
+
+    async function getVisiTorUserDetails() {
+
+        try {
+
+
+            console.log("fetched user Name ", (authData?.data)?.data.name);
+
+            const response = await AuthServices.getUserAllDetails();
+
+            console.log("response ka data hai ",response.data.data);
+
+            setAuthData(response.data.data);
+
+
+            // console.log("user profile data ", userProfileData);
+
+
+
+        }
+        catch (error) {
+
+            navigate("/");
+
+            console.log(error);
+
+
+        }
+    }
+
+
+
 
 
     async function setUserProfileHandler() {
@@ -148,6 +188,7 @@ const Profile = () => {
 
     
 
+
     function clickHandler(title) {
 
         setClickedButton(title);
@@ -156,7 +197,7 @@ const Profile = () => {
     }
 
 
-    
+
 
     async function followUnfollowHandler(newUser, originalUser) {
 
@@ -164,27 +205,35 @@ const Profile = () => {
 
             let response = await PostServices.performFollowUnfollow(newUser, originalUser);
             const newData = Object.values((response?.data).data)[0];
-    
+
+
+            console.log("new data ",newData);
+
             // Clone the existing auth data to avoid mutating it directly
             const updatedAuthData = { ...newAuthData };
-    
+
             if (newData['following'].includes(originalUserData[0]._id)) {
                 // Add the original user's ID to the following list
                 updatedAuthData['following'] = [...updatedAuthData['following'], originalUserData[0]._id];
                 toast.success("User successfully followed.");
+
             } else {
                 // Remove the original user's ID from the following list
                 updatedAuthData['following'] = updatedAuthData['following'].filter(id => id !== originalUserData[0]._id);
                 toast.warning("User unfollowed.");
             }
-    
+
             // Update the state with the modified auth data
+
             setAuthData(updatedAuthData);
+
         } catch (error) {
+
             console.log(error);
+
         }
     }
-    
+
 
 
 
@@ -200,6 +249,8 @@ const Profile = () => {
 
 
         getUserDetails();
+
+        getVisiTorUserDetails();
 
 
     }, [location.pathname]);
@@ -307,65 +358,39 @@ const Profile = () => {
 
                         }
 
-                        {/* / 304 when no users followed each other */}
-                        {/* 
-                        {
-
-                            console.log(originalUserData[0]._id)
-                        } */}
-
-                        {
-
-                            console.log("new auth data ",newAuthData?.following)
-
-                        }
-
-                        {
-
-                            (newAuthData?.following?.includes(originalUserData[0]?._id)) && <div className='' onClick={()=>followUnfollowHandler(originalUser,newUser)}>
-
-                                <button className='font-bold border-2 border-white/45 p-2
-                                rounded-full pl-3 pr-3'>Unfollow</button>
-
-                            </div>
-
-                        }
-
-                        {/* 305 when newUser already  followed original user then we show folowing button  */}
 
 
-                        {
+                        {originalUser !== newUser && (
 
-                            (newAuthData?.followers?.includes(originalUserData[0]?._id)) && <div className='' onClick={() => followUnfollowHandler(originalUser, newUser)}>
+                            // Check if the newAuthData (visiting user) follows the originalUser (profile owner)
+                            (newAuthData?.following?.includes(originalUserData[0]?._id)) ? (
 
-                                <button className='font-bold border-2 border-white/45 p-2
-                                rounded-full pl-3 pr-3'>Follow BAck </button>
+                                // If the visiting user doesn't follow the profile owner, display the "Follow" button
+                                <button className='font-bold border-2 border-white/45 p-2 rounded-full pl-3 pr-3' onClick={() => followUnfollowHandler(originalUser, newUser)}>
+                                    Unfollow
+                                </button>
+                                
+                            ) : (
+                                // Check if the originalUser (profile owner) follows the newAuthData (visiting user)
+                                (originalUserData[0]?.following?.includes(newAuthData?.data?.data?._id)) ? (
+                                    // If both users follow each other, display the "Unfollow" button
+                                    <button className='font-bold border-2 border-white/45 p-2 rounded-full pl-3 pr-3' onClick={() => followUnfollowHandler(originalUser, newUser)}>
+                                        followBack
+                                    </button>
+                                ) : (
+                                    // If the visiting user follows the profile owner but profile owner doesn't follow back, display the "Unfollow" button
+                                    <button className='font-bold border-2 border-white/45 p-2 rounded-full pl-3 pr-3' onClick={() => followUnfollowHandler(originalUser, newUser)}>
+                                        Follow
+                                    </button>
+                                )
+                            )
+                        )}
 
-                            </div>
 
-                        }
-
-
-                        {/* 306 when newUser already  followed by original user then we show followback  button  */}
-
-
-                        {
-
-                            (!(newAuthData?.following?.includes(originalUserData[0]?._id)) &&
-
-                                !(newAuthData?.followers.includes(originalUserData[0]?._id)) &&
-                                originalUser !== newUser
-                            ) && <div className='' onClick={() => followUnfollowHandler(originalUser, newUser)}>
-
-                                <button className='font-bold border-2 border-white/45 p-2
-                                rounded-full pl-3 pr-3'>Follow</button>
-
-                            </div>
-
-                        }
 
 
                     </div>
+
                     {/* right div  */}
 
                 </div>

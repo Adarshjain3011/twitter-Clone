@@ -90,12 +90,12 @@ const HomePage = () => {
 
         <div className='bg-black w-full min-h-screen flex justify-center '>
 
-            <div className='flex w-[554px] gap-7 border'>
+            <div className='flex w-[534px] gap-7 border'>
 
 
                 {
 
-                    click && <div className='w-[550px] flex flex-col bg-black fixed top-12 z-30 rounded-xl right-[25%]'>
+                    click && <div className='w-[530px] flex flex-col bg-black fixed top-12 z-30 rounded-xl right-[25%]'>
 
                         <div className='flex'>
 
@@ -145,7 +145,7 @@ const HomePage = () => {
 
                 {/* </div> */}
 
-                <div className='bg-black flex flex-col w-[550px] h-full'>
+                <div className='bg-black flex flex-col w-[500px] h-full'>
 
 
                     <CreatePost></CreatePost>

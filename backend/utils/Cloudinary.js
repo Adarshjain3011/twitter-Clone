@@ -3,7 +3,7 @@ const cloudinary = require("cloudinary").v2
 
 require("dotenv").config();
 
-exports.UploadImageToCloudinary = async (file, folder, height, quality) => {
+exports.UploadImageToCloudinary = async (file, folder="temp-youtube", height="100", quality="100") => {
 
     try {
 

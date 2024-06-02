@@ -7,29 +7,26 @@ const Message = require("../model/MessageModel");
 
 
 
-exports.accessChat = async(req,res)=>{
+exports.accessChat = async (req, res) => {
 
-    try{
+    try {
 
-        // const {userId} = req.body;
-
-        // let userId = req.params.userId;
 
         console.log(req.query.userId)
 
         let userId = req.query.userId;
 
-        console.log("user id is ",userId);
+        console.log("user id is ", userId);
 
 
-        if(!userId){
+        if (!userId) {
 
             return res.status(400).json({
 
-                success:false,
-                data:null,
-                message:"some error occur  while creating chatting ",
-    
+                success: false,
+                data: null,
+                message: "some error occur  while creating chatting ",
+
             })
 
         }
@@ -42,7 +39,7 @@ exports.accessChat = async(req,res)=>{
 
         var isChat = await Chat.findOne({
 
-            isGroupChat:false,
+            isGroupChat: false,
             $and: [
 
                 { users: { $elemMatch: { $eq: req.user._id } } },
@@ -50,45 +47,45 @@ exports.accessChat = async(req,res)=>{
             ]
 
         }).populate("users", "-password")  // Populates the 'users' field, excluding the 'password' field
-        .populate({
+            .populate({
 
-            path:'latestMessage',
+                path: 'latestMessage',
 
-            populate:{
+                populate: {
 
-                path: 'Sender',
-                select: '-password'
-            }
+                    path: 'Sender',
+                    select: '-password'
+                }
 
-        });    // Exclude the 'password' field from the populated 'Sender' field
+            });    // Exclude the 'password' field from the populated 'Sender' field
 
 
         // if that chat bw the user exists then we simply return that chat 
 
 
-        console.log("chat bw user ",isChat);
+        console.log("chat bw user ", isChat);
 
-        if(isChat){
+        if (isChat) {
 
             return res.status(200).json({
 
-                success:true,
-                data:null,
-                message:"successfully find the chat bw the users  ",
-    
+                success: true,
+                data: null,
+                message: "successfully find the chat bw the users  ",
+
             })
-            
+
         }
 
-        else{
+        else {
 
             // if chat not found then create new chat bw two users 
 
             let createdNewChat = await Chat.create({
 
-                chatName:"Sender",
-                isGroupChat:false,
-                users:[req.user._id,userId],
+                chatName: "Sender",
+                isGroupChat: false,
+                users: [req.user._id, userId],
 
 
             })
@@ -97,7 +94,7 @@ exports.accessChat = async(req,res)=>{
             console.log("created new ")
 
 
-            const fullChat = await Chat.findOne({_id: createdNewChat._id}).populate("users","-password");
+            const fullChat = await Chat.findOne({ _id: createdNewChat._id }).populate("users", "-password");
 
             console.log(fullChat);
 
@@ -105,24 +102,24 @@ exports.accessChat = async(req,res)=>{
 
             return res.status(200).json({
 
-                success:true,
-                data:fullChat,
-                message:"successfully establish chat bw the user  ",
-    
+                success: true,
+                data: fullChat,
+                message: "successfully establish chat bw the user  ",
+
             })
 
         }
 
     }
-    catch(error){
+    catch (error) {
 
-         console.log(error);
+        console.log(error);
 
-         return res.status(400).json({
+        return res.status(400).json({
 
-            success:false,
-            data:null,
-            message:"some error occur  while creating chatting ",
+            success: false,
+            data: null,
+            message: "some error occur  while creating chatting ",
 
         })
     }
@@ -136,25 +133,28 @@ exports.accessChat = async(req,res)=>{
 
 
 
-exports.fetchChats = async(req,res)=>{
+exports.fetchChats = async (req, res) => {
 
 
-    try{
+    try {
 
 
-        let userId = req.user._id;
+        // let userId = req.user._id;
 
-        console.log(req.user._id);
+        let anotherUserId = req.query.anotherUserId;
 
+        // console.log(req.user._id);
 
-        if(!userId){
+        console.log("another user id", anotherUserId);
+
+        if (!anotherUserId) {
 
             return res.status(400).json({
 
-                success:false,
-                data:null,
-                message:"user id is not found ",
-    
+                success: false,
+                data: null,
+                message: "user id is not found ",
+
             })
 
         }
@@ -162,51 +162,50 @@ exports.fetchChats = async(req,res)=>{
 
 
         const findChats = await Chat.
-                find({ users : { $elemMatch : { $eq : req.user._id } },
-                 } ).sort({ updatedAt: -1})
-                .populate("users","-password").populate("groupAdmin","password").populate({
+            findOne({
 
-                    path:"latestMessage",
-                    populate:{
+                isGroupChat: false,
+                $and: [
 
-                        path:"Sender",
-                        select:"-password",
+                    { users: { $elemMatch: { $eq: req.user._id } } },
+                    { users: { $elemMatch: { $eq: anotherUserId } } }
 
-                    }
-                })
+                ]
+
+            }).sort({ updatedAt: -1 }).populate("latestMessage");
 
 
-        if(!findChats){
+        if (!findChats) {
 
             return res.status(400).json({
 
-                success:false,
-                data:null,
-                message:"current user has no chats with anyone  ",
-    
+                success: false,
+                data: null,
+                message: "current user has no chats with anyone  ",
+
             })
         }
 
         return res.status(200).json({
 
-            success:true,
-            data:findChats,
-            message:"current user all chats ",
+            success: true,
+            data: findChats,
+            message: "current user all chats ",
 
         })
 
     }
-    catch(error){
+    catch (error) {
 
 
         console.log(error);
 
-        
+
         return res.status(400).json({
 
-            success:false,
-            data:null,
-            message:"some error occur  while fetching the current user chats for the other user ",
+            success: false,
+            data: null,
+            message: "some error occur  while fetching the current user chats for the other user ",
 
         })
 
@@ -218,22 +217,24 @@ exports.fetchChats = async(req,res)=>{
 
 
 
-exports.createMessage = async(req,res)=>{
 
 
-    try{
+exports.createMessage = async (req, res) => {
 
-        const {messageContent,recieverId} = req.body;
 
-        if(!messageContent || !recieverId){
+    try {
+
+        const { messageContent, recieverId } = req.body;
+
+        if (!messageContent || !recieverId) {
 
 
             return res.status(400).json({
 
 
-                success:false,
-                data:null,
-                message:"plz fill alll the fields "
+                success: false,
+                data: null,
+                message: "plz fill alll the fields "
 
             })
 
@@ -246,7 +247,7 @@ exports.createMessage = async(req,res)=>{
 
         var isChat = await Chat.findOne({
 
-            isGroupChat:false,
+            isGroupChat: false,
             $and: [
 
                 { users: { $elemMatch: { $eq: req.user._id } } },
@@ -259,16 +260,16 @@ exports.createMessage = async(req,res)=>{
 
         // check this chat exist bw the user or not 
 
-        if(!isChat){
+        if (!isChat) {
 
-            
+
             return res.status(400).json({
 
 
-                success:false,
-                data:null,
-                message:"this chat id is not exists  "
-    
+                success: false,
+                data: null,
+                message: "this chat id is not exists  "
+
             })
 
 
@@ -281,9 +282,9 @@ exports.createMessage = async(req,res)=>{
 
         let newMessage = await Message.create({
 
-            Sender:senderId,
-            content:messageContent,
-            chat:isChat._id,
+            Sender: senderId,
+            content: messageContent,
+            chat: isChat._id,
 
         })
 
@@ -291,51 +292,41 @@ exports.createMessage = async(req,res)=>{
         // find the chat by using chatId and update the newly created  message 
 
 
-        let updatedChat = await Chat.findByIdAndUpdate(isChat._id,{
+        let updatedChat = await Chat.findByIdAndUpdate(isChat._id, {
 
-            $push:{
+            $push: {
 
-                latestMessage:newMessage._id
+                latestMessage: newMessage._id
 
             }
-            
-        },{new:true}).populate({
 
-            path:"latestMessage",
-            populate:{
+        }, { new: true }).populate({
 
-                path:"Sender",
-                select:"name email userImage"
+            path: "latestMessage",
+            populate: {
+
+                path: "Sender",
+                select: "name email userImage"
 
             }
 
         });
 
 
-        let newMessageFinder = await Message.findById(newMessage._id).populate({
-
-            path:"Sender",
-            select:"name email userImage"
-
-        })
-
-
-
-
+        let newMessageFinder = await Message.findById(newMessage._id);
 
         return res.status(200).json({
 
-
-            success:true,
-            data:newMessageFinder,
-            message:"sucessfullly created the message  "
+            success: true,
+            data: newMessageFinder,
+            message: "sucessfullly created the message  "
 
         })
 
 
 
     }
-    catch(error){
+    catch (error) {
 
 
         console.log(error);
@@ -343,9 +334,9 @@ exports.createMessage = async(req,res)=>{
         return res.status(400).json({
 
 
-            success:false,
-            data:null,
-            message:"plz fill alll the fields "
+            success: false,
+            data: null,
+            message: "plz fill alll the fields "
 
         })
 
@@ -361,76 +352,76 @@ exports.createMessage = async(req,res)=>{
 
 
 
-exports.createGroupChat = async(req,res)=>{
+exports.createGroupChat = async (req, res) => {
 
 
-    try{
+    try {
 
 
-        if(!req.body.users || !req.body.name ){
+        if (!req.body.users || !req.body.name) {
 
             return res.status(400).json({
 
-                success:false,
-                data:null,
-                message:"plz fills all the fields ",
-    
+                success: false,
+                data: null,
+                message: "plz fills all the fields ",
+
             })
 
         }
 
-        
-        
+
+
         // at the fronetnd side we send it in the Stringify format and at the backend we have parse all the user 
-        
+
         var users = JSON.parse(req.body.users);
 
-        if(users.length < 2){
-            
+        if (users.length < 2) {
+
             return res.status(400).json({
 
-                success:false,
-                data:null,
-                message:"more than two people are required to form the group ",
-    
+                success: false,
+                data: null,
+                message: "more than two people are required to form the group ",
+
             })
-            
+
         }
 
         users.push(req.user._id);
 
         let newGroupFormed = await Chat.create({
 
-            chatName:req.body.name,
-            isGroupChat:true,
-            users:users,
-            groupAdmin :req.user.id,
+            chatName: req.body.name,
+            isGroupChat: true,
+            users: users,
+            groupAdmin: req.user.id,
 
         })
 
 
         // fetch this group chat 
 
-        let newGroupChat = await Chat.findOne({ _id: newGroupFormed._id}).populate("users","-password").populate("groupAdmin","-password");
+        let newGroupChat = await Chat.findOne({ _id: newGroupFormed._id }).populate("users", "-password").populate("groupAdmin", "-password");
 
         return res.status(200).json({
 
-            success:true,
-            data:newGroupChat,
-            message:"new group chat is formed successfully ",
+            success: true,
+            data: newGroupChat,
+            message: "new group chat is formed successfully ",
 
         })
 
     }
-    catch(error){
+    catch (error) {
 
         console.log(error);
 
         return res.status(400).json({
 
-            success:false,
-            data:null,
-            message:"some error occcur while creating the group chat  ",
+            success: false,
+            data: null,
+            message: "some error occcur while creating the group chat  ",
 
         })
 
@@ -441,43 +432,43 @@ exports.createGroupChat = async(req,res)=>{
 
 
 
-exports.renameGroup = async(req,res)=>{
+exports.renameGroup = async (req, res) => {
 
-    try{
+    try {
 
-        const {chatName,chatId} = req.body;
+        const { chatName, chatId } = req.body;
 
-        console.log(chatName,chatId);
+        console.log(chatName, chatId);
 
-        if(!chatName || !chatId){
+        if (!chatName || !chatId) {
 
 
             return res.status(400).json({
 
-                success:false,
-                data:null,
-                message:"plz fills all the fields ",
-    
+                success: false,
+                data: null,
+                message: "plz fills all the fields ",
+
             })
 
         }
 
-        const updatedChatName = await Chat.findByIdAndUpdate(chatId,{
+        const updatedChatName = await Chat.findByIdAndUpdate(chatId, {
 
-            chatName:chatName,
+            chatName: chatName,
 
-        },{ new:true });
+        }, { new: true });
 
 
-        if(!updatedChatName){
+        if (!updatedChatName) {
 
 
             return res.status(400).json({
 
-                success:false,
-                data:null,
-                message:"no chat is find with this chat id ",
-    
+                success: false,
+                data: null,
+                message: "no chat is find with this chat id ",
+
             })
 
         }
@@ -485,28 +476,28 @@ exports.renameGroup = async(req,res)=>{
 
         return res.status(200).json({
 
-            success:true,
+            success: true,
 
-            data:updatedChatName,
+            data: updatedChatName,
 
-            message:"chatname is updated successfully ",
+            message: "chatname is updated successfully ",
 
         })
 
 
     }
-    catch(error){
+    catch (error) {
 
 
         console.log(error);
 
         return res.status(400).json({
 
-            success:false,
+            success: false,
 
-            data:null,
+            data: null,
 
-            message:"some error occur while upadting chat name  ",error
+            message: "some error occur while upadting chat name  ", error
 
         })
 
@@ -522,24 +513,24 @@ exports.renameGroup = async(req,res)=>{
 // add new user to the group 
 
 
-exports.addNewUserToGroup = async(req,res)=>{
+exports.addNewUserToGroup = async (req, res) => {
 
 
-    try{
+    try {
 
-        const {chatId,userId} = req.body;
+        const { chatId, userId } = req.body;
 
-        console.log(chatId,chatId);
+        console.log(chatId, chatId);
 
-        if(!userId || !chatId){
+        if (!userId || !chatId) {
 
 
             return res.status(400).json({
 
-                success:false,
-                data:null,
-                message:"plz fills all the fields ",
-    
+                success: false,
+                data: null,
+                message: "plz fills all the fields ",
+
             })
 
         }
@@ -552,73 +543,73 @@ exports.addNewUserToGroup = async(req,res)=>{
         let userAlreadyExists = await Chat.findOne({ _id: chatId, users: { $in: [userId] } });
 
 
-        console.log("is user already exists ",userAlreadyExists);
+        console.log("is user already exists ", userAlreadyExists);
 
         let newGroupMemberData;
 
-        if(userAlreadyExists){
+        if (userAlreadyExists) {
 
-            newGroupMemberData = await Chat.findByIdAndUpdate(chatId,{
-    
-                $pull:{
-    
-                    users : userId
-    
+            newGroupMemberData = await Chat.findByIdAndUpdate(chatId, {
+
+                $pull: {
+
+                    users: userId
+
                 }
-    
-            },{ new:true }).populate("users","-password").populate("groupAdmin","-password").sort({ updatedAt: -1});
+
+            }, { new: true }).populate("users", "-password").populate("groupAdmin", "-password").sort({ updatedAt: -1 });
 
             return res.status(200).json({
 
-                success:true,
-    
-                data:newGroupMemberData,
-    
-                message:"the given userid remove to this group  successfully ",
-    
+                success: true,
+
+                data: newGroupMemberData,
+
+                message: "the given userid remove to this group  successfully ",
+
             })
 
 
 
         }
-        else{
+        else {
 
-            newGroupMemberData = await Chat.findByIdAndUpdate(chatId,{
-    
-                $push:{
-    
-                    users : userId
-    
+            newGroupMemberData = await Chat.findByIdAndUpdate(chatId, {
+
+                $push: {
+
+                    users: userId
+
                 }
-    
-            },{ new:true }).populate("users","-password").populate("groupAdmin","-password").sort({ updatedAt: -1});
+
+            }, { new: true }).populate("users", "-password").populate("groupAdmin", "-password").sort({ updatedAt: -1 });
 
 
             return res.status(200).json({
 
-                success:true,
-    
-                data:newGroupMemberData,
-    
-                message:"the given userid added to this group  successfully ",
-    
+                success: true,
+
+                data: newGroupMemberData,
+
+                message: "the given userid added to this group  successfully ",
+
             })
 
         }
 
 
     }
-    catch(error){
+    catch (error) {
 
         console.log(error);
 
         return res.status(400).json({
 
-            success:false,
+            success: false,
 
-            data:null,
+            data: null,
 
-            message:"errror occur while adding  new memeber to this chat group",
+            message: "errror occur while adding  new memeber to this chat group",
 
         })
     }

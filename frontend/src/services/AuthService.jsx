@@ -124,8 +124,7 @@ const accessChat = async(userId)=>{
 
 const fetchChats = async(data)=>{
 
-    return await jsonData.get("/fetchChats");
-
+    return await jsonData.get(`/fetchChats?anotherUserId=${data}`);
 
 }
 
@@ -158,6 +157,43 @@ const createMessage = async(data)=>{
 
 }
 
+const checkUserOnline = async(userId)=>{
+
+    return await jsonData.get(`/${userId}/online`);
+
+}
+
+
+
+
+const createNewNotification = async(data)=>{
+
+
+    //recieverId, message
+
+    return await jsonData.post("/createNotification",data);
+
+}
+
+
+const getUserAllNotifications = async()=>{
+
+
+    return await jsonData.get("/getAllNotification");
+
+
+}
+
+
+const getUserAllDetails = async()=>{
+
+
+    return await jsonData.get("/getUserDetails");
+
+
+}
+
+
 
 
 
@@ -176,6 +212,9 @@ const AuthServices = {
     updateUserProfile,
     userLogout,
     getUserProfileDetails,
+    getUserAllDetails,
+
+
 
     accessChat,
     fetchChats,
@@ -183,7 +222,10 @@ const AuthServices = {
     findUser,
     renameGroup,
     addNewUserToGroup,
-    createMessage
+    createMessage,
+    checkUserOnline,
+    getUserAllNotifications,
+
 
 
 }

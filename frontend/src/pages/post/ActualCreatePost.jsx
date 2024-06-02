@@ -204,7 +204,7 @@ const ActualCreatePost = () => {
 
         <div className='bg-black w-full mt-16'>
 
-            <div className='flex relative h-auto w-[550px]'>
+            <div className='flex relative h-auto w-[500px]'>
 
                 <div className='w-[9%] flex rounded-full relative pl-3 pt-3'>
 
@@ -234,7 +234,7 @@ const ActualCreatePost = () => {
 
                     <div className='flex overflow-auto'>
 
-                        <div className='flex overflow-x-auto relative w-[550px]  max-w-maxContent gap-4'>
+                        <div className='flex overflow-x-auto relative w-[500px]  max-w-maxContent gap-4'>
 
                             {
                                 imagesUrl.length > 0 && imagesUrl.map((data, index) => (

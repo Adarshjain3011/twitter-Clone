@@ -242,7 +242,7 @@ const DisplayAllPost = ({ userDetails, setUserDetails, setClick, click }) => {
                 hasMore={hasMore}
                 loader={<ContentLoaders></ContentLoaders>}
             >
-                <div className='bg-black flex flex-col border border-white/20 w-[600px] h-full relative'>
+                <div className='bg-black flex flex-col border-white/20 w-[530px] h-full relative'>
 
 
                     {
@@ -250,23 +250,23 @@ const DisplayAllPost = ({ userDetails, setUserDetails, setClick, click }) => {
                         items.map((data) => (
 
 
-                            <div className='bg-black flex border border-white/15 relative h-auto w-[600px]'>
+                            <div className='bg-black flex relative w-[530px] '>
 
 
-                                <div className='relative'>
+                                <div className='relative '>
 
                                     {
 
                                         data.map((postData) => (
 
-                                            <div className='flex border border-b'>
+                                            <div className='flex  border-b gap-2 p-4'>
 
-                                                <div className='w-[11%] flex rounded-full relative pl-3 pt-3'>
+                                                <div className='w-[40px] flex relative'>
 
-                                                    <div className='w-[40px] h-[40px] rounded-full bg-white/75
+                                                    <div className='w-[40px] h-[40px] bg-white/75 rounded-full
                                                                  flex justify-center items-center' onClick={() => moveToUserProfileHandler(postData?.user?.name)}>
 
-                                                        <img src={postData?.user?.userImage} alt="" className='w-full h-full bg-cover' />
+                                                        <img src={postData?.user?.userImage} alt="" className='w-full h-full bg-cover rounded-full' />
 
                                                         {/* {
 
@@ -277,20 +277,20 @@ const DisplayAllPost = ({ userDetails, setUserDetails, setClick, click }) => {
 
                                                 </div>
 
-                                                <div className='w-[90%] relative flex flex-col pt-4 gap-2'>
+                                                <div className='w-[450px] relative flex flex-col pt-4 gap-2'>
 
 
                                                     <p>{postData?.description}</p>
 
-                                                    <div className='flex overflow-auto'>
+                                                    <div className='flex overflow-auto relative'>
 
-                                                        <div className='flex overflow-x-auto relative w-[500px]  max-w-maxContent gap-4'>
+                                                        <div className='flex overflow-x-auto relative w-[450px]  max-w-maxContent gap-4'>
 
                                                             {
                                                                 postData?.postUrl?.map((data, index) => (
 
 
-                                                                    <div className='relative w-[580px] h-[200px] rounded-xl'>
+                                                                    <div className='relative w-[400px] h-[200px] rounded-xl'>
 
                                                                         <MdDelete className='absolute right-5 w-[40px] h-[40px] text-black top-0'></MdDelete>
 
@@ -420,6 +420,8 @@ const DisplayAllPost = ({ userDetails, setUserDetails, setClick, click }) => {
                                                     </div>
 
                                                 </div>
+
+
                                             </div>
 
 

@@ -55,12 +55,6 @@ const EditProfile = () => {
     // Create a new Date object
     let date = new Date(year, month - 1, day); // Month in JavaScript starts from 0
 
-    // Format the date object to the desired format "yyyy-MM-dd"
-    // let formattedDate = date?.toISOString()?.slice(0, 10);
-
-
-    // console.log("new format ",formattedDate);
-
     let formattedDate;
 
     const[profileImage,setProfileImage] = useState(data[0]?.userImage);

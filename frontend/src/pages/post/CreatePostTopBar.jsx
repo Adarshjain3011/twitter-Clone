@@ -10,7 +10,7 @@ const CreatePostTopBar = () => {
 
     return (
 
-        <div className="bg-black flex border border-white/15 h-16 justify-center items-center fixed top-0 z-10 w-[558px] left-[28.2%]">
+        <div className="bg-black flex border border-white/15 h-16 justify-center items-center fixed top-0 z-10 w-[530px] left-[31%]">
 
             <div className="flex w-[90%] relative">
 
@@ -51,3 +51,7 @@ const CreatePostTopBar = () => {
 };
 
 export default CreatePostTopBar;
+
+
+
+

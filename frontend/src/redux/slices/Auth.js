@@ -9,6 +9,8 @@ import AuthService from "../../services/AuthService"
 import { useNavigate } from "react-router-dom";
 
 
+
+
 export const authData = createAsyncThunk("auth-login", async (data,thunkAPI) => {
     
     console.log("data is ",data);

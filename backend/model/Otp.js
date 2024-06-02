@@ -4,29 +4,23 @@ const mailSender = require("../utils/MailSender");
 
 const OtpSchema = new mongoose.Schema({
 
-    email:{
-
-        type:String
-
+    email: {
+        type: String
     },
     
-    otp:{
-
-        type:String,
-
+    otp: {
+        type: String
     },
 
-    createdAt:{
-
-        type:Date,
-        default:Date.now(),
-        index: { expires: 300 }, // Automatically expire OTP after 5 minutes
-
+    createdAt: {
+        type: Date,
+        default: () => Date.now(),
+        index: { expires: 300 } 
     },
 
-},{timestamps:true});
+}, { timestamps: true });
+
+module.exports = mongoose.model("Otp", OtpSchema);
 
 
-
-module.exports = mongoose.model("Otp",OtpSchema);
 

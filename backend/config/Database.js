@@ -4,14 +4,11 @@ require("dotenv").config();
 
 const dbConnect = ()=>{
 
-    // mongoose.connect("mongodb://127.0.0.1:27017/twitter",{}).then((data)=>{
 
-    console.log(
-        
-        process.env.DATABASE_URL
-    )
+    console.log("dat base url ",process.env.DATABASE_URL);
 
-    mongoose.connect(`mongodb+srv://adarshjain3011:97547@cluster0.q3yqnrh.mongodb.net/twitter`,{}).then((data)=>{
+
+    mongoose.connect(`${process.env.DATABASE_URL}`,{}).then((data)=>{
 
         console.log("database connected successfully ");
 
