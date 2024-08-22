@@ -101,9 +101,11 @@ io.on("connection", (socket) => {
 
 
 // middleware 
-app.use(cookieParser());
 
 app.use(express.json());
+
+app.use(cookieParser());
+
 
 
 app.use(express.json({ strict: false }));

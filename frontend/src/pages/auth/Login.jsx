@@ -14,7 +14,11 @@ import axios from "axios";
 
 import { authData } from '../../redux/slices/Auth';
 
-import { toast } from "react-toastify"
+import { toast } from "react-toastify" ;
+
+import InputBox from '../../components/common/InputBox';
+
+import Button from '../../components/common/Button';
 
 
 
@@ -85,11 +89,9 @@ const Login = () => {
   return (
 
 
-    <div className='w-full h-full bg-black'>
+    <div className='w-screen min-h-screen bg-black flex justify-center items-center'>
 
-
-
-      <div className=' w-[600px] flex flex-col justify-center items-center h-[600px] m-auto gap-5'>
+      <div className=' flex flex-col justify-center items-center  m-auto gap-5'>
 
         <div className='flex justify-center full '>
 
@@ -111,74 +113,21 @@ const Login = () => {
           <h1 className='text-3xl font-bold text-center'>Login Your Account</h1>
 
 
-          <div>
-
-            <input type='email' placeholder='Enter your Email' name='email'
-
-              {...register("email",
-                {
-                  required: "email is required",
-                  pattern: {
-
-                    value: /^[^@ ]+@[^@ ]+\.[^@ .]{2,}$/,
-                    message: "Email is not valid."
-
-                  }
-
-                })}
-              className='w-[500px] p-4 rounded-md outline-none border
-            bg-black font-semibold text-2xl
-             focus-within:border-blue-600'>
-
-            </input>
-
-            {errors.email && <p className="errorMsg text-red-500 font-semibold">{errors.email.message}</p>}
-
-          </div>
-
-          <div>
-
-            <input type='password' placeholder='Enter your Password' name='password'
-
-              {...register("password",
-
-                {
-                  required: "Password is required.",
-                  minLength: {
-                    value: 6,
-                    message: "Password should be at-least 6 characters."
-                  }
-
-                })}
-              className='w-[500px] p-4 rounded-md outline-none border
-           bg-black font-semibold text-2xl
-            focus-within:border-blue-600'>
-
-            </input>
-
-            <Link to ="/auth/auth-forgotPassword">
-
-              <p className='text-end text-sky-600/90 font-bold hover:underline '>forgot password</p>
-
-            </Link>
-
-
-
-            {errors.password && (
-              <p className="errorMsg text-red-500 font-semibold">{errors.password.message}</p>
-            )}
-
-          </div>
-
-          <div className='flex justify-center items-center'>
-
-            <button type='Submit' className='w-[300px] border-2
-           border-slate-500 p-3
-            font-bold hover:bg-sky-500'
-            >Log in
-            </button>
-
-          </div>
+          <InputBox
+            type='email'
+            placeholder='Enter your Email'
+            name='email'
+            register={register}
+            errors={errors}
+          />
+          <InputBox
+            type='password'
+            placeholder='Enter your Password'
+            name='password'
+            register={register}
+            errors={errors}
+          />
+          <Button clickHandler={handleSubmit(onSubmit)}>Sign Up</Button>
 
           <div className='flex'>
 

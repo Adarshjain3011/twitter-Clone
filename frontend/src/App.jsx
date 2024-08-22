@@ -11,8 +11,6 @@ import HomePage from './pages/HomePage';
 
 import { ToastContainer, toast } from "react-toastify";
 
-import OtpChangePassowrd from "./pages/auth/OtpChangePassword";
-
 import SideFeatureContainer from './constant/SideFeatureContainer';
 
 import SearchBarContainer from './constant/SearchBarContainer';
@@ -136,7 +134,7 @@ function App() {
 
             <Route path='auth-ForgotChangePassword' element={<ForgotChangePassword></ForgotChangePassword>}></Route>
 
-            <Route path='auth-OtpChangePassowrd' element={<OtpChangePassowrd></OtpChangePassowrd>}></Route>
+            {/* <Route path='auth-OtpChangePassowrd' element={<OtpChangePassowrd></OtpChangePassowrd>}></Route> */}
 
           </Route>
 
@@ -165,10 +163,6 @@ function App() {
           currentPathName!=="auth" && <SearchBarContainer></SearchBarContainer>
 
         }
-
-        {/* {
-          !location.pathname.includes("auth") && <SearchBarContainer></SearchBarContainer>
-        } */}
 
 
       </div>
