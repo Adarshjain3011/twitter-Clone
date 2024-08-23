@@ -29,7 +29,9 @@ const ProtectedRoute = ({ children }) => {
     }, [dispatch, isAuthenticated, location, navigate]);
 
     // If authenticated, render the children, otherwise redirect to login
+    
     if (!isAuthenticated) {
+
         return null; // You can show a loader here if necessary
     }
 

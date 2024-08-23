@@ -23,12 +23,12 @@ exports.sendOtp = async (email) => {
 
     try {
 
-        const otp = otpGenerator.generate(5, { upperCaseAlphabets: false, specialChars: false ,lowerCaseAlphabets:false });
+        const otp = otpGenerator.generate(5, { upperCaseAlphabets: false, specialChars: false, lowerCaseAlphabets: false });
 
         const createOtp = await Otp.create({
 
-            email:email,
-             otp:otp
+            email: email,
+            otp: otp
 
         });
 
@@ -38,7 +38,7 @@ exports.sendOtp = async (email) => {
         console.log("mail send successfully ", mailResponse);
 
 
-        console.log("createOtp",createOtp);
+        console.log("createOtp", createOtp);
 
         if (createOtp) {
 
@@ -65,56 +65,56 @@ exports.sendOtp = async (email) => {
 }
 
 
-exports.resendOtp = async(req,res)=>{
+exports.resendOtp = async (req, res) => {
 
-    try{
+    try {
 
 
         console.log("resend otp ke andar ");
 
-        const {email} = req.body ;
+        const { email } = req.body;
 
-        console.log("email is ",email);
+        console.log("email is ", email);
         const response = await this.sendOtp(email);
 
-        console.log("response is ",response);
+        console.log("response is ", response);
 
 
-        if(response){
+        if (response) {
 
             return res.status(200).json({
 
-                success:true,
-                data:null,
-                message:"otp send successfully to the user email"
+                success: true,
+                data: null,
+                message: "otp send successfully to the user email"
 
             })
         }
 
-        else{
+        else {
 
             return res.status(400).json({
 
-                success:false,
-                data:null,
-                message:"error occur while sending otp to the user email"
+                success: false,
+                data: null,
+                message: "error occur while sending otp to the user email"
 
             })
-            
+
         }
 
     }
 
-    catch(error){
+    catch (error) {
 
         return res.status(400).json({
 
-            success:false,
-            data:null,
-            message:"error occur while sending otp to the user email"
+            success: false,
+            data: null,
+            message: "error occur while sending otp to the user email"
 
         })
-        
+
 
     }
 }
@@ -131,7 +131,7 @@ exports.VerifyOtp = async (req, res) => {
 
         const { otp, email } = req.body;
 
-        console.log(otp,email);
+        console.log(otp, email);
         // validate the data 
 
         if (!otp || !email) {
@@ -150,7 +150,7 @@ exports.VerifyOtp = async (req, res) => {
 
         const mostRecent = await Otp.find({ email: email }).sort({ createdAt: -1 }).limit(1);
 
-        console.log("most recent",mostRecent);
+        console.log("most recent", mostRecent);
 
         if (mostRecent.length === 0) {
 
@@ -170,7 +170,7 @@ exports.VerifyOtp = async (req, res) => {
 
         // verfify the otp 
 
-        console.log(otp,mostRecent[0].otp);
+        console.log(otp, mostRecent[0].otp);
 
         if (otp !== mostRecent[0].otp) {
 
@@ -178,22 +178,22 @@ exports.VerifyOtp = async (req, res) => {
             return res.status(400).json({
 
                 success: false,
-    
+
                 data: null,
-    
+
                 message: "otp is not valid "
-    
+
             })
-            
-            
+
+
         }
-        
+
         const updateUser = await User.findOneAndUpdate({ email: email }, {
 
             isVerified: true
 
         }, { new: true });
-        
+
         return res.status(200).json({
 
             success: true,
@@ -273,32 +273,53 @@ exports.signUp = async (req, res) => {
 
                 success: false,
                 data: null,
-                message: "this user is also exists you need to verify through otp "
+                message: "t user is already  exists you need to verify the user  "
 
             })
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // const createOtp = await this.sendOtp(email);
 
-        // create the additional detaisl fields 
+
+        // sending an otp to the user 
+
+
+        try {
+
+            await this.sendOtp(createUser.email);
+
+        }
+        catch (error) {
+
+            return res.status(400).json({
+
+                success: false,
+                data: null,
+                message: "error while while sending otp to the user  ",
+                error: error.message
+
+            })
+
+        }
+
 
         const newAddtionalDetails = await AdditionalDetails.create({
 
-            dob:"",
-            gender:null,
-            ContactNo:"",
-            coverImage:"",
-            bio:"",
-            city:"",
-            additionalLink:"",
-            ContactNo:"",
-            coverImage:"",
+            dob: "",
+            gender: null,
+            ContactNo: "",
+            coverImage: "",
+            bio: "",
+            city: "",
+            additionalLink: "",
+            ContactNo: "",
+            coverImage: "",
 
         })
 
 
+        // create a new user 
 
         const createUser = await User.create({
 
@@ -306,21 +327,18 @@ exports.signUp = async (req, res) => {
             email: email,
             password: hashedPassword,
             userImage: `https://api.dicebear.com/5.x/initials/svg?seed=${name}`,
-            
-            addtionalDetails:newAddtionalDetails._id,
+
+            addtionalDetails: newAddtionalDetails._id,
 
 
         })
 
-
-        await this.sendOtp(createUser.email);
-
         return res.status(200).json({
 
             success: true,
-            data:createUser,
+            data: createUser,
             message: "user entry in DB Successfully ",
-            
+
         })
 
 
@@ -333,9 +351,9 @@ exports.signUp = async (req, res) => {
         return res.status(400).json({
 
             success: false,
-            data:null,
+            data: null,
             message: "error while creating the sign up ",
-            error:error.message
+            error: error.message
 
         })
     }
@@ -343,25 +361,15 @@ exports.signUp = async (req, res) => {
 
 
 
-// const options = {
-
-//     httpOnly:true,
-//     secure:true,
-//     expiresIn:new Date()+24*60*60*1000,
-
-// }
+const generateRefreshAndAccessToken = async (userId) => {
 
 
 
-const generateRefreshAndAccessToken = async(userId)=>{
-
-
-
-    try{
+    try {
 
         // validate 
 
-        if(!userId){
+        if (!userId) {
 
             return false;
         }
@@ -370,7 +378,7 @@ const generateRefreshAndAccessToken = async(userId)=>{
         const userExists = await User.findById(userId);
 
 
-        if(!userExists){
+        if (!userExists) {
 
             return false;
 
@@ -382,19 +390,19 @@ const generateRefreshAndAccessToken = async(userId)=>{
 
         userExists.refreshToken = refreshToken;
 
-        await userExists.save({validateBeforeSave:false});
+        await userExists.save({ validateBeforeSave: false });
 
-        return { accessToken,refreshToken };
+        return { accessToken, refreshToken };
 
 
     }
 
-    catch(error){
+    catch (error) {
 
         console.log(error);
 
         return false;
-        
+
     }
 }
 
@@ -402,47 +410,44 @@ const generateRefreshAndAccessToken = async(userId)=>{
 // login the user 
 
 
-exports.logIn = async(req,res)=>{
+exports.logIn = async (req, res) => {
 
-    try{
+    try {
 
-        // const {emailOrUserName,password} = req.body;
+        const { emailOrUserName, password } = req.body
 
-        const emailOrUserName = req.body.email;
-        const password = req.body.password;
-
-        console.log(emailOrUserName,password);
+        console.log(emailOrUserName, password);
 
 
-        if(!emailOrUserName || !password){
+        if (!emailOrUserName || !password) {
 
-            return res.status(410).json({
+            return res.status(400).json({
 
                 success: false,
-                data:null,
+                data: null,
                 message: "all fields are not fullfilled  ",
-                
-    
+
+
             })
         }
 
         const userExists = await User.find({
 
-            $or:[{email:emailOrUserName},{name:emailOrUserName}]
+            $or: [{ email: emailOrUserName }, { name: emailOrUserName }]
 
         });
 
-        console.log("userExists",userExists);
+        console.log("userExists", userExists);
 
-        if(!userExists){
+        if (!userExists || userExists.length === 0) {
 
             return res.status(400).json({
 
                 success: false,
-                data:null,
+                data: null,
                 message: "user is not valid   ",
-                
-    
+
+
             })
 
         }
@@ -450,155 +455,144 @@ exports.logIn = async(req,res)=>{
 
         // check the user verified is true or not 
 
+        let userData = userExists[0];
+
+        console.log("userData", userData);
+
+
         console.log("hellow1");
-        
-        console.log(userExists.isVerified);
 
-        if( userExists[0].isVerified !== true){
+        console.log(userExists?.isVerified);
 
-            await this.sendOtp(userExists.email);
+        if (!userData?.isVerified) {
 
-            return res.status(410).json({
+            return res.status(400).json({
 
                 success: false,
-                data:null,
+                data: null,
                 message: "user is not verified plz verify your user   ",
-                
-    
+
+
             })
 
         }
 
-        console.log("hellow 2");
-        // check the pasword 
+        if (!await bcrypt.compare(password, userData.password)) {
 
 
-        console.log(userExists);
-
-        console.log(password);
-
-        // const checkPassword = await bcrypt.compare(password,userExists.password);
-
-        const checkPassword = await bcrypt.compare(password,userExists[0].password);
-
-        console.log("hellow3");
-
-        if(checkPassword === false){
-            
             console.log("password not match");
             return res.status(400).json({
 
                 success: false,
-                data:null,
+                data: null,
                 message: "password dosent macth ",
-                
-    
+
+
             })
+
 
         }
 
         // create token 
 
-        const {refreshToken,accessToken} = await generateRefreshAndAccessToken(userExists[0]._id);
+        const { refreshToken, accessToken } = await generateRefreshAndAccessToken(userData._id);
 
         console.log(userExists._id);
-        const loggedInUser = await User.findOne({ _id:userExists[0]._id }).select("-refreshToken -password");
+        const loggedInUser = await User.findOne({ _id: userData._id }).select("-refreshToken -password");
 
         //send the cookie
 
-        console.log("logged user ",loggedInUser);
+        console.log("logged user ", loggedInUser);
 
         const options = {
             httpOnly: true,
             secure: true, // Set to true if using HTTPS
-            Credential:true,
+            Credential: true,
             expiresIn: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
 
-          };
+        };
 
+        // successfully return the response 
 
         return res
-        .status(200)
-        .cookie("AccessToken", accessToken, options)
-        .cookie("RefreshToken", refreshToken, options)
-        .json({
-          success: true,
-          data: { refreshToken, accessToken, loggedInUser },
-          message: "User logged in successfully",
+            .status(200)
+            .cookie("AccessToken", accessToken, options)
+            .cookie("RefreshToken", refreshToken, options)
+            .json({
+                success: true,
+                data: loggedInUser.email,
+                message: "User logged in successfully",
 
-        });
-  
-        
+            });
 
-        // send the ma
     }
 
-    catch(error){
+    catch (error) {
 
         console.log(error);
 
-            return res.status(400).json({
+        return res.status(500).json({
 
-                success: false,
-                data:null,
-                message: "error while creating the sign up ",
-                error:error.message,
+            success: false,
+            data: null,
+            message: "error while creating the sign up ",
+            error: error.message,
 
-            })
+        })
     }
 }
 
 
 
 
-// logout condition 
+// logout condition W
 
 
-exports.logOut = async(req,res)=>{
+exports.logOut = async (req, res) => {
 
-    try{
+    try {
 
         const userId = req.user._id;
 
-        if(!userId){
+        if (!userId) {
 
             return res.status(400).json({
 
                 success: false,
-                data:null,
+                data: null,
                 message: "user id not found  ",
-                
+
             })
 
         }
 
-        const findUser = await User.findByIdAndUpdate(userId,{
+        const findUser = await User.findByIdAndUpdate(userId, {
 
-            refreshToken:undefined,
+            refreshToken: undefined,
 
-        },{new:true});
+        }, { new: true });
 
-        return res.status(201).clearCookie("AccessToken",options).clearCookie("RefreshToken",options).json({
+        return res.status(201).clearCookie("AccessToken", options).clearCookie("RefreshToken", options).json({
 
-            success:true,
-            data:findUser,
-            message:"user logout successfully ",
+            success: true,
+            data: findUser,
+            message: "user logout successfully ",
 
         })
 
 
     }
 
-    catch(error){
-        
+    catch (error) {
+
         console.log(error);
 
         return res.status(400).json({
 
             success: false,
-            data:null,
+            data: null,
             message: "error while log out ",
-            error:error.message
+            error: error.message
 
         })
 
@@ -611,32 +605,32 @@ exports.logOut = async(req,res)=>{
 // forgot password
 
 
-exports.resetPassword = async(req,res)=>{
+exports.resetPassword = async (req, res) => {
 
-    try{
+    try {
 
 
         // ftech th data 
 
         const userId = req.user._id;
 
-        const {oldPassword,currentPassword,confirmPassword} = req.body;
+        const { oldPassword, currentPassword, confirmPassword } = req.body;
 
 
         // validate the data 
 
 
-        if(!userId || !currentPassword || !oldPassword || !confirmPassword){
+        if (!userId || !currentPassword || !oldPassword || !confirmPassword) {
 
             return res.status(400).json({
 
                 success: false,
-                data:null,
+                data: null,
                 message: "user id not found  ",
-                
+
             })
 
-        }   
+        }
 
         // find the user 
 
@@ -644,27 +638,27 @@ exports.resetPassword = async(req,res)=>{
 
         // compare the old and existing password 
 
-        const checkPassword = await bcrypt.compare(currentPassword,userDetails.password);
+        const checkPassword = await bcrypt.compare(currentPassword, userDetails.password);
 
-        if(checkPassword){
+        if (checkPassword) {
 
             // compare currentPassword and  confirmPassword 
 
-            if(currentPassword !== confirmPassword){
+            if (currentPassword !== confirmPassword) {
 
                 return res.status(400).json({
 
                     success: false,
-                    data:null,
+                    data: null,
                     message: " password  currentPassword and confirmPassword does not match",
-                    
+
                 })
             }
 
 
             // hash the new password 
 
-            const hashPassword = await bcrypt.hash(currentPassword,10);
+            const hashPassword = await bcrypt.hash(currentPassword, 10);
 
             userDetails.password = hashPassword;
 
@@ -675,28 +669,28 @@ exports.resetPassword = async(req,res)=>{
 
             // successfully send the mail to the user 
 
-            await sendMail(email,"password reset successfully ");
-            
+            await sendMail(email, "password reset successfully ");
+
 
             return res.status(200).json({
 
                 success: true,
-                data:userDetails,
+                data: userDetails,
                 message: " password reset  successfully",
-                
+
             })
 
         }
 
-        else{
+        else {
 
-            
+
             return res.status(400).json({
 
                 success: false,
-                data:null,
+                data: null,
                 message: " password  currentPassword and oldPassword does not match",
-                
+
             })
 
 
@@ -704,16 +698,16 @@ exports.resetPassword = async(req,res)=>{
 
     }
 
-    catch(error){
+    catch (error) {
 
         console.log(error);
 
         return res.status(400).json({
 
             success: false,
-            data:null,
+            data: null,
             message: "error reset the password  ",
-            error:error.message
+            error: error.message
 
         })
 
@@ -724,87 +718,87 @@ exports.resetPassword = async(req,res)=>{
 
 
 
-exports.forgotPassword = async(req,res)=>{
+exports.forgotPassword = async (req, res) => {
 
-    try{
+    try {
 
         // fetch the data 
 
-        const {currentPassword,confirmPassword,email} = req.body;
+        const { currentPassword, confirmPassword, email } = req.body;
 
 
         // validate the data 
 
 
-        if(!email || !currentPassword || !confirmPassword){
+        if (!email || !currentPassword || !confirmPassword) {
 
             return res.status(400).json({
 
                 success: false,
-                data:null,
+                data: null,
                 message: "all fileds are  not found  ",
-                
+
             })
 
-        }   
+        }
 
         // find the user 
 
-        const userDetails = await User.findOne({email:email});
+        const userDetails = await User.findOne({ email: email });
 
 
-            // compare currentPassword and  confirmPassword 
+        // compare currentPassword and  confirmPassword 
 
-            if(currentPassword !== confirmPassword){
+        if (currentPassword !== confirmPassword) {
 
-                return res.status(400).json({
+            return res.status(400).json({
 
-                    success: false,
-                    data:null,
-                    message: " password  currentPassword and confirmPassword does not match",
-                    
-                })
-            }
+                success: false,
+                data: null,
+                message: " password  currentPassword and confirmPassword does not match",
 
-
-            // hash the new password 
-
-            const hashPassword = await bcrypt.hash(currentPassword,10);
-
-            userDetails.password = hashPassword;
-
-
-            // update the user details 
-
-            await userDetails.save();
-
-            // successfully send the mail to the user 
-
-            await sendMail(email,"password change successfully ");
-            
-
-            return res.status(200).json({
-
-                success: true,
-                data:userDetails,
-                message: " password reset  successfully",
-                
             })
+        }
+
+
+        // hash the new password 
+
+        const hashPassword = await bcrypt.hash(currentPassword, 10);
+
+        userDetails.password = hashPassword;
+
+
+        // update the user details 
+
+        await userDetails.save();
+
+        // successfully send the mail to the user 
+
+        await sendMail(email, "password change successfully ");
+
+
+        return res.status(200).json({
+
+            success: true,
+            data: userDetails,
+            message: " password reset  successfully",
+
+        })
 
 
 
     }
 
-    catch(error){
+    catch (error) {
 
         console.log(error);
 
         return res.status(400).json({
 
             success: false,
-            data:null,
+            data: null,
             message: "error reset the password  ",
-            error:error.message
+            error: error.message
 
         })
 
