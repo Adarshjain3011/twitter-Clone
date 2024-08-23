@@ -8,10 +8,7 @@ import { useForm } from "react-hook-form";
 
 import abc from "../../assets/ximage.png";
 
-import { useDispatch, useSelector } from "react-redux"
-
 import axios from "axios";
-
 
 import { toast } from "react-toastify";
 
@@ -29,23 +26,21 @@ const Login = () => {
 
   const { register, handleSubmit, formState: { errors } } = useForm();
 
-
-  const dispatch = useDispatch();
-
-
-  console.log("hellow");
-
-  const state = useSelector((state) => state);
-
   const onSubmit = async (data) => {
 
     try {
 
-      let data = await AuthServices.getUserAllDetails(data);
+      const response = await AuthServices.authLogin(data);
+
+      console.log("data", response.data);
+
+      toast.success(response.data.message);
+
+      navigate('/homepage');
 
     } catch (error) {
 
-      console.log(error);
+      console.log(error.message);
 
     }
 
@@ -61,11 +56,8 @@ const Login = () => {
 
         <div className='flex justify-center full '>
 
-          {/* <GiCrossMark></GiCrossMark> */}
 
           <div className='w-[40px] h-[40px] rounded-full '>
-
-
 
             <img src={abc} alt="" className='w-full h-full bg-cover rounded-full ' />
 
@@ -82,7 +74,7 @@ const Login = () => {
           <InputBox
             type='email'
             placeholder='Enter your Email'
-            name='email'
+            name='emailOrUserName'
             register={register}
             errors={errors}
           />

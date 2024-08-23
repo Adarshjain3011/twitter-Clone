@@ -1,66 +1,41 @@
-import React, { useEffect } from 'react'
-import { useSelector } from "react-redux"
-import { Navigate, useLocation } from "react-router-dom";
-
-// import { UserData } from '../redux/slices/Auth';
-
-import { useDispatch } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from "react-redux";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
+import AuthServices from '../services/AuthService'; 
+import { setUserData } from "../redux/slices/Auth";
 
 const ProtectedRoute = ({ children }) => {
-
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
-    const state = useSelector((state) => state);
-
-    useEffect(()=>{
-
+    useEffect(() => {
         async function getUserData() {
-    
-            await dispatch(UserData).then((response) => {
-    
-                console.log(state);
-    
-                if (state.auth.isError === 410) {
-    
-                    console.log(state.auth.isError);
-    
-                    toast.warning("plz verify your email ");
-    
-                    navigate("/auth/auth-signup", { replace: true });
-    
-    
-                }
-    
-                else if (state.auth.isError === 400) {
-    
-                    toast.error("passoword dosent match ");
-    
-                }
-                else {
-    
-    
-                    navigate("/homepage");
-    
-                }
-    
-    
-            })
+            try {
+                const response = await AuthServices.getUserAllDetails();
+                dispatch(setUserData(response.data.data));
+            } catch (error) {
+                toast.error(error.message);
+                toast.error("Token not found or invalid");
+                navigate("/auth/auth-signup", { state: { from: location } });
+            }
         }
 
-        getUserData();
+        if (!isAuthenticated) {
+            getUserData();
+        }
+    }, [dispatch, isAuthenticated, location, navigate]);
 
-    },[]);
-
-    const user = useSelector((state) => state.user);
-    let location = useLocation();
-
-    if (!user?.state?.isAuthenticated) {
-        return <Navigate to="/auth/auth-login" state={{ from: location }} replace />
+    // If authenticated, render the children, otherwise redirect to login
+    if (!isAuthenticated) {
+        return null; // You can show a loader here if necessary
     }
-    return children
 
+    return children;
 };
 
-
-
 export default ProtectedRoute;
+
+
