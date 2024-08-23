@@ -44,7 +44,7 @@ const Login = () => {
 
       console.log(state);
 
-      if (state.auth.isError === 410) {
+      if (state.auth.status === 410) {
 
         console.log(state.auth.isError);
 
@@ -55,7 +55,9 @@ const Login = () => {
 
       }
 
-      else if (state.auth.isError === 400) {
+      else if (state.auth.status === 400) {
+
+        console.log(state.auth);
 
         toast.error("passoword dosent match ");
 
@@ -115,7 +117,7 @@ const Login = () => {
             register={register}
             errors={errors}
           />
-          <Button clickHandler={handleSubmit(onSubmit)}>Sign Up</Button>
+          <Button clickHandler={handleSubmit(onSubmit)}>Log In </Button>
 
           <div className='flex'>
 

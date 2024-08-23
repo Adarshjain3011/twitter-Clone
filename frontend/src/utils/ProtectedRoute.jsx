@@ -2,7 +2,9 @@ import React, { useEffect } from 'react'
 import { useSelector } from "react-redux"
 import { Navigate, useLocation } from "react-router-dom";
 
-import { UserData } from '@/redux/slices/Auth';
+import { UserData } from '../redux/slices/Auth';
+
+import { useDispatch } from 'react-redux';
 
 const ProtectedRoute = ({ children }) => {
 
@@ -52,14 +54,13 @@ const ProtectedRoute = ({ children }) => {
     const user = useSelector((state) => state.user);
     let location = useLocation();
 
-    if (!user.state.isAuthenticated) {
+    if (!user?.state?.isAuthenticated) {
         return <Navigate to="/auth/auth-login" state={{ from: location }} replace />
     }
     return children
 
 };
 
+
+
 export default ProtectedRoute;
-
-
-
