@@ -1,12 +1,13 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vitejs.dev/config/
+import path from 'path';
+
 export default defineConfig({
   plugins: [react()],
-  server:{
+  server: {
 
-    port:3000,
+    port: 3000,
     proxy: {
       "/api": {
         target: "https://localhost:4000",
@@ -14,9 +15,14 @@ export default defineConfig({
         secure: false,
       },
     },
-    
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "./src"),
+      },
+    },
+
   },
-  
+
 })
 
 

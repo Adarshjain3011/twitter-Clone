@@ -36,11 +36,6 @@ const ActualCreatePost = () => {
 
     console.log("text area ka data ", textAreaData);
 
-    // const dispatch = useDispatch();
-
-    // const postData = useSelector((state) => state.post.data);
-    // const loading = useSelector((state) => state.post.loading);
-    // const isError = useSelector((state) =>state.post.isError);
 
     async function createPostHandler() {
 
@@ -198,6 +193,8 @@ const ActualCreatePost = () => {
         }
     }
 
+
+    
 
 
     return (

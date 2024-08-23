@@ -11,7 +11,7 @@ import HomePage from './pages/HomePage';
 
 import { ToastContainer, toast } from "react-toastify";
 
-import SideFeatureContainer from './constant/SideFeatureContainer';
+import SideFeatureContainer from './components/common/SideFeatureContainer';
 
 import SearchBarContainer from './constant/SearchBarContainer';
 
@@ -88,8 +88,6 @@ function App() {
     }
 
 }
-
-
 
 
   useEffect(()=>{

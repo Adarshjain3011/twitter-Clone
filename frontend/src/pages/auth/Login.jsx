@@ -38,18 +38,12 @@ const Login = () => {
 
   const onSubmit = async (data) => {
 
-    // console.log(errors);
-
     console.log("data", data);
-
-    // console.log(state);
 
     await dispatch(authData(data)).then((response) => {
 
       console.log(state);
 
-
-      // if(state.auth.is)
       if (state.auth.isError === 410) {
 
         console.log(state.auth.isError);
@@ -79,12 +73,6 @@ const Login = () => {
 
   }
 
-  // function moveToOtp(){
-
-
-  //   navigate("auth/auth-forgotPassword");
-
-  // }
 
   return (
 

@@ -29,7 +29,7 @@ const OtpVerificationForm = () => {
         await AuthServices.authVerifyOtp({ otp, email })
             .then(() => {
                 toast.success("User successfully verified!");
-                navigate("/");
+                navigate("/auth/auth-login");
             })
             .catch(() => {
                 toast.error("Please enter the correct OTP.");
@@ -51,7 +51,7 @@ const OtpVerificationForm = () => {
             <div className='flex flex-col w-fit max-w-md md:max-w-lg lg:max-w-xl gap-7 border-2 border-gray-700 shadow-2xl p-8 bg-[#1F2937] rounded-lg'>
                 <h1 className='text-center text-3xl md:text-4xl font-semibold text-white'>OTP Verification</h1>
                 <p className='text-center text-gray-400'>Enter the OTP sent to your email for verification</p>
-                <form className='flex justify-center items-center' onSubmit={handleSubmit(submitHandler)}>
+                <form className='flex justify-center items-center'>
                     <OtpInput
 
                         value={otp}
@@ -82,7 +82,7 @@ const OtpVerificationForm = () => {
                             Resend OTP
                         </Button>
                     )}
-                    <Button clickHandler={handleSubmit(submitHandler)}>
+                    <Button clickHandler={submitHandler}>
                         Verify OTP
                     </Button>
                 </div>
