@@ -44,60 +44,6 @@ function App() {
 
   const navigate = useNavigate();
 
-  const location = useLocation();
-
-  const dispatch = useDispatch();
-
-  const authData = useSelector((state) => state.auth.data);
-  const isLoading = useSelector((state) => state.auth.loading);
-  const isError = useSelector((state) =>state.auth.isError);
-
-
-  
-  console.log("current path ka name ", location.pathname);
-
-  console.log("current path ka name ", location.pathname.split("/")[1]);
-
-  const currentPathName = location.pathname.split("/")[1];
-
-
-  async function tokenCall(){
-
-    await dispatch(AuthToken());
-
-    if (!isLoading) {
-
-        console.log("authData:", authData);
-      
-        if(authData === 400 || isError === 400){
-
-            console.log("Auth data value is ",authData);
-      
-            navigate("/");
-    
-        }
-      
-        else{
-
-            console.log("home page jane ke liye taiyaar ",authData);
-      
-            navigate("/homepage");
-          
-        }
-   
-    }
-
-}
-
-
-  useEffect(()=>{
-
-    console.log("hellow");
-
-    tokenCall();
-    
-  },[])
-
 
   return (
 
@@ -132,8 +78,6 @@ function App() {
 
             <Route path='auth-ForgotChangePassword' element={<ForgotChangePassword></ForgotChangePassword>}></Route>
 
-            {/* <Route path='auth-OtpChangePassowrd' element={<OtpChangePassowrd></OtpChangePassowrd>}></Route> */}
-
           </Route>
 
 
@@ -153,14 +97,6 @@ function App() {
           
 
         </Routes>
-
-        {/* <EditProfile></EditProfile> */}
-
-        {
-
-          currentPathName!=="auth" && <SearchBarContainer></SearchBarContainer>
-
-        }
 
 
       </div>

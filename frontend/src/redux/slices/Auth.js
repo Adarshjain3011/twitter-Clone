@@ -28,11 +28,25 @@ export const AuthToken = createAsyncThunk('auth-verify-token', async (_, thunkAP
   }
 });
 
+export const UserData = createAsyncThunk('get-user-data', async (_, thunkAPI) => {
+  try {
+    const response = await AuthService.getUserAllDetails();
+    return response;
+  } catch (error) {
+    const status = error.response ? error.response.status : null;
+    return thunkAPI.rejectWithValue({ status, message: error.message });
+  }
+});
+
+
+
+
 // Initial state
 const initialState = {
   isLoading: false,
   data: [],
   isError: null,
+  isAuthenticated: false
 };
 
 // Slice definition
@@ -51,6 +65,8 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.isError = null;
         state.data = action.payload;
+        state.isAuthenticated = true;
+        
       })
       // authData rejected
       .addCase(authData.rejected, (state, action) => {

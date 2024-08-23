@@ -11,8 +11,7 @@ import 'react-loading-skeleton/dist/skeleton.css'
 
 import { useNavigate } from 'react-router-dom';
 
-{/* <Skeleton /> // Simple, single-line loading skeleton
-<Skeleton count={5} /> // Five-line loading skeleton */}
+import ComboBox from '../components/common/Combobox';
 
 
 const SearchBarContainer = () => {
@@ -85,7 +84,7 @@ const SearchBarContainer = () => {
             {/* Serach bar  */}
 
 
-            <form className='flex flex-col gap-10 fixed mt-3 z-20' onSubmit={handleSubmit(onSubmit)}>
+            {/* <form className='flex flex-col gap-10 fixed mt-3 z-20' onSubmit={handleSubmit(onSubmit)}>
 
                 <div className='flex justify-center items-center ' onClick={() => setClick(!click)}>
 
@@ -101,10 +100,9 @@ const SearchBarContainer = () => {
 
                 </div>
 
-            </form>
+            </form> */}
 
-
-            {/* box Subs */}
+            <ComboBox></ComboBox>
 
             <div className='relative'>
 
