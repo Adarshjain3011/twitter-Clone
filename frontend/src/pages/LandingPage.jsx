@@ -3,80 +3,14 @@ import React from 'react'
 import { FaApple } from "react-icons/fa";
 
 import ximage from "../assets/ximage.png";
+
 import { Link } from 'react-router-dom';
-
-import { useSelector,useDispatch } from 'react-redux';
-
-import { AuthToken } from '../redux/slices/Auth';
 
 import { useEffect,useState } from 'react';
 
 import { useNavigate } from 'react-router-dom';
 
 const LandingPage = () => {
-
-    const dispatch = useDispatch();
-
-    const navigate = useNavigate();
-
-    const authData = useSelector((state) => state.auth.data);
-    const isLoading = useSelector((state) => state.auth.loading);
-    const isError = useSelector((state) =>state.auth.isError);
-
-    console.log("first",authData,isLoading,isError);
-
-
-useEffect(() => {
-
-//   dispatch(AuthToken());
-
-
-if (!isLoading) {
-
-    console.log("authData:", authData);
-
-
-    console.log("auth ka data lamdin gpage ke andar ",authData);
-  
-    if(authData === 400 || isError === 400){
-        
-        console.log("landing page call done ",authData);
-
-        navigate("/auth/auth-signup");
-
-    }
-  
-    else{
-  
-      navigate("/homepage");
-      
-    }
-    // Use authData here after it's been fetched
-  }
-
-}, []);
-
-
-// if (!isLoading) {
-
-//     console.log("authData:", authData);
-
-
-//     console.log("auth ka data lamdin gpage ke andar ",authData);
-  
-//     if(authData === 400 || isError === 400){
-  
-//         navigate("auth/auth-signup");
-
-//     }
-  
-//     else{
-  
-//     //   navigate("/homepage");
-      
-//     }
-//     // Use authData here after it's been fetched
-//   }
 
     return (
 
@@ -143,14 +77,12 @@ if (!isLoading) {
 
                         </Link>
 
-
                     </div>
-
 
                 </div>
 
             </div>
-
+            
         </div>
 
     )

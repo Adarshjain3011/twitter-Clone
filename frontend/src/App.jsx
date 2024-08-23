@@ -14,8 +14,6 @@ import ChatPage from './pages/messages/ChatPage';
 import Notification from './pages/notification/Notification';
 import SideFeatureContainer from './components/common/SideFeatureContainer';
 import SearchBarContainer from './constant/SearchBarContainer';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import ProtectedRoute from './utils/ProtectedRoute';
 
 

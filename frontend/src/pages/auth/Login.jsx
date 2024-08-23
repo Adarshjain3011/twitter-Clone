@@ -12,13 +12,14 @@ import { useDispatch, useSelector } from "react-redux"
 
 import axios from "axios";
 
-import { authData } from '../../redux/slices/Auth';
 
-import { toast } from "react-toastify" ;
+import { toast } from "react-toastify";
 
 import InputBox from '../../components/common/InputBox';
 
 import Button from '../../components/common/Button';
+
+import AuthServices from '../../services/AuthService';
 
 
 
@@ -38,40 +39,15 @@ const Login = () => {
 
   const onSubmit = async (data) => {
 
-    console.log("data", data);
+    try {
 
-    await dispatch(authData(data)).then((response) => {
+      let data = await AuthServices.getUserAllDetails(data);
 
-      console.log(state);
+    } catch (error) {
 
-      if (state.auth.status === 410) {
+      console.log(error);
 
-        console.log(state.auth.isError);
-
-        toast.warning("plz verify your email ");
-
-        navigate("/auth/auth-signup",{replace:true});
-
-
-      }
-
-      else if (state.auth.status === 400) {
-
-        console.log(state.auth);
-
-        toast.error("passoword dosent match ");
-
-      }
-      else {
-
-
-        navigate("/homepage");
-
-      }
-
-
-    })
-
+    }
 
   }
 
