@@ -28,6 +28,9 @@ const ProtectedRoute = ({ children }) => {
         };
 
         getUserData();
+
+        console.log("authenticate at protected route ",isAuthenticated);
+
     }, [isAuthenticated, dispatch, navigate]);
 
     return isAuthenticated ? children : <Navigate to="/auth/auth-signup" />;

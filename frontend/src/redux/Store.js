@@ -1,16 +1,14 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 import authSlice from "./slices/Auth";
-import postReducer from "./slices/Post";
+import postSlice from "./slices/Post";
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import {
-  FLUSH,
-  REHYDRATE,
-  PAUSE,
-  PERSIST,
-  PURGE,
-  REGISTER,
-} from "redux-persist";
+
+import { combineReducers } from "@reduxjs/toolkit";
+
+import checkTokenMiddleware from "./middleware/checkToken";
+
+import { FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist";
 
 const persistConfig = {
   key: "root",
@@ -20,7 +18,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   auth: authSlice,
-  post: postReducer,
+  post: postSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -32,10 +30,11 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }),
+    }).concat(checkTokenMiddleware), // Add your custom middleware here
 });
 
 export default store;
+
 
 
 

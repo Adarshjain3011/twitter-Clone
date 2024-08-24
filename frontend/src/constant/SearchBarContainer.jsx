@@ -16,6 +16,8 @@ import ComboBox from '../components/common/Combobox';
 
 const SearchBarContainer = () => {
 
+    
+        const navigate = useNavigate();
 
     const { register, handleSubmit, formState: { errors } } = useForm();
 
@@ -24,9 +26,6 @@ const SearchBarContainer = () => {
     const [searchResult, setSearchResult] = useState([]);
 
     const [Loading, setLoading] = useState(false);
-
-
-    const navigate = useNavigate();
 
 
     const onSubmit = async (data) => {
@@ -123,10 +122,10 @@ const SearchBarContainer = () => {
                     </button>
 
                 </div>
+{/* 
+                <div className='absolute top-0 bg-black w-full border-2 border-gray-800 rounded-xl max-h-[400px]'> */}
 
-                <div className='absolute top-0 bg-black w-full border-2 border-gray-800 rounded-xl max-h-[400px]'>
-
-                    {
+                    {/* {
                         click && (
 
                             searchResult.length > 0 ? (
@@ -160,16 +159,15 @@ const SearchBarContainer = () => {
                             ) : (
                                 <div>
 
-                                    {/* Skeleton loading */}
-                                    <Skeleton /> {/* Simple, single-line loading skeleton */}
-                                    <Skeleton count={5} /> {/* Five-line loading skeleton */}
+                                    <Skeleton /> 
+                                    <Skeleton count={5} /> 
 
                                 </div>
                             )
                         )
-                    }
+                    } */}
 
-                </div>
+                {/* </div> */}
 
             </div>
 

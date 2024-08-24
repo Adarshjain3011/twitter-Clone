@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 
 import SideFeatureContainer from '../components/common/SideFeatureContainer' ;
 
+import SearchBarContainer from '@/constant/SearchBarContainer';
+
 
 const HomePage = () => {
 
@@ -9,14 +11,16 @@ const HomePage = () => {
     return (
 
         <div className='bg-black w-full min-h-screen flex justify-center '>
-{/* 
-            <SideFeatureContainer></SideFeatureContainer> */}
 
-            <h1 className='text-white'>Hellow </h1>
+            <SideFeatureContainer></SideFeatureContainer>
+
+
+            <SearchBarContainer></SearchBarContainer>
 
         </div>
     )
 }
 
-export default HomePage
+export default HomePage ;
+
 

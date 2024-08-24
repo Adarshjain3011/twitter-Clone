@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
 import ximage from "../../assets/ximage.png";
-import userImage from "../../assets/defaultUser.png";
 
 import { useSideFeatures } from '../../constant/data';
 import { useSelector, useDispatch } from 'react-redux';
@@ -12,12 +11,18 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import Button from './Button';
 import AuthServices from '../../services/AuthService';
 
+import { clearUserData } from '@/redux/slices/Auth';
+
+import { toast } from 'react-toastify';
+
 const SideFeatureContainer = () => {
     
     const SideFeatures = useSideFeatures();
     const dispatch = useDispatch();
     const authData = useSelector((state) => state.auth.data);
     const navigate = useNavigate();
+
+    console.log("auth data at hompage",authData);
 
     const moveToProfileContainer = () => {
         navigate(`/profile/${(authData?.data)?.data?.name}`);
@@ -26,9 +31,17 @@ const SideFeatureContainer = () => {
     const userLogout = async () => {
         try {
             const response = await AuthServices.userLogout();
+
+            dispatch(clearUserData());
+
+            toast.success("user logged out successfully")
+
             navigate("/auth/auth-signup");
+
         } catch (error) {
+
             console.error(error);
+            
         }
     };
 
@@ -47,7 +60,7 @@ const SideFeatureContainer = () => {
                             {SideFeatures && SideFeatures.map((data, index) => (
                                 <div key={index} className='flex gap-4 p-1 items-center hover:bg-slate-600 rounded-full' onClick={data.onClick}>
                                     <span className='text-3xl'>{data.icon}</span>
-                                    <h1 className='font-medium text-xl text-center'>{data.title}</h1>
+                                    <h1 className='font-medium text-lg text-center'>{data.title}</h1>
                                 </div>
                             ))}
                         </div>
@@ -62,13 +75,13 @@ const SideFeatureContainer = () => {
 
                 <Popover>
                     <PopoverTrigger asChild>
-                        <div className='flex justify-between cursor-pointer'>
-                            <div className='flex justify-center items-center gap-2'>
+                        <div className='flex justify-between items-center cursor-pointer'>
+                            <div className='flex justify-center items-center gap-8'>
                                 <div className='w-[30px] h-[30px]'>
-                                    <img src={userImage} alt="" className='w-full h-full bg-cover rounded-full' />
+                                    <img src={authData.userImage} alt="" className='w-full h-full bg-cover rounded-full' />
                                 </div>
-                                <div>
-                                    <h1 className='text-center font-semibold text-sm text-nowrap'>{(authData?.data)?.data?.name}</h1>
+                                <div className=''>
+                                    <h1 className='text-center font-semibold text-xl text-nowrap'>{(authData?.name)}</h1>
                                 </div>
                             </div>
                             <HiOutlineDotsHorizontal className="text-2xl" />
@@ -87,7 +100,7 @@ const SideFeatureContainer = () => {
                             className='font-bold text-lg hover:bg-white/20 p-2 cursor-pointer'
                             onClick={userLogout}
                         >
-                            Log out @{(authData?.data)?.data?.name}
+                            Log out @{(authData?.name)}
                         </p>
                     </PopoverContent>
                 </Popover>

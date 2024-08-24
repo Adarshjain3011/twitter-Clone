@@ -2,6 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import storage from "redux-persist/lib/storage";
+
 const initialState = {
   isLoading: false,
   data: null,
@@ -34,7 +36,8 @@ const authSlice = createSlice({
       state.data = null;
       state.isAuthenticated = false;
       state.error = null;
-      toast.info('User logged out');
+      storage.removeItem('persist:root');  // Clear the persisted state
+      // toast.info('User logged out');
     },
   },
 });

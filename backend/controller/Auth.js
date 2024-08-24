@@ -19,6 +19,15 @@ const cookie = require("cookie");
 const { sendMail } = require("../utils/MailSender");
 
 
+const options = {
+
+    httpOnly: true,
+    secure: true,
+    expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours from now
+};
+
+
+
 exports.sendOtp = async (email) => {
 
     try {
@@ -409,138 +418,87 @@ const generateRefreshAndAccessToken = async (userId) => {
 
 // login the user 
 
-
 exports.logIn = async (req, res) => {
-
     try {
-
-        const { emailOrUserName, password } = req.body
-
-        console.log(emailOrUserName, password);
-
+        const { emailOrUserName, password } = req.body;
 
         if (!emailOrUserName || !password) {
-
             return res.status(400).json({
-
                 success: false,
                 data: null,
-                message: "all fields are not fullfilled  ",
-
-
-            })
+                message: "All fields are required",
+            });
         }
 
-        const userExists = await User.find({
-
+        // Look up the user by email or username
+        const userData = await User.findOne({
             $or: [{ email: emailOrUserName }, { name: emailOrUserName }]
-
         });
 
-        console.log("userExists", userExists);
-
-        if (!userExists || userExists.length === 0) {
-
+        if (!userData) {
             return res.status(400).json({
-
                 success: false,
                 data: null,
-                message: "user is not valid   ",
-
-
-            })
-
+                message: "Invalid user credentials",
+            });
         }
 
-
-        // check the user verified is true or not 
-
-        let userData = userExists[0];
-
-        console.log("userData", userData);
-
-
-        console.log("hellow1");
-
-        console.log(userExists?.isVerified);
-
-        if (!userData?.isVerified) {
-
+        // Check if the user is verified
+        if (!userData.isVerified) {
             return res.status(400).json({
-
                 success: false,
                 data: null,
-                message: "user is not verified plz verify your user   ",
-
-
-            })
-
+                message: "User is not verified. Please verify your account.",
+            });
         }
 
-        if (!await bcrypt.compare(password, userData.password)) {
-
-
-            console.log("password not match");
+        // Check if the password matches
+        const isPasswordMatch = await bcrypt.compare(password, userData.password);
+        if (!isPasswordMatch) {
             return res.status(400).json({
-
                 success: false,
                 data: null,
-                message: "password dosent macth ",
-
-
-            })
-
-
+                message: "Incorrect password",
+            });
         }
 
-        // create token 
-
+        // Generate tokens
         const { refreshToken, accessToken } = await generateRefreshAndAccessToken(userData._id);
 
-        console.log(userExists._id);
-        const loggedInUser = await User.findOne({ _id: userData._id }).select("-refreshToken -password");
+        // Exclude sensitive fields before sending the user data
+        const loggedInUser = await User.findById(userData._id).select("-refreshToken -password");
 
-        //send the cookie
-
-        console.log("logged user ", loggedInUser);
-
-        const options = {
+        // Set cookie options
+        const cookieOptions = {
             httpOnly: true,
-            secure: true, // Set to true if using HTTPS
-            Credential: true,
-            expiresIn: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
-
+            secure: process.env.NODE_ENV === 'production', // Set to true only in production
+            credentials: true,
+            expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
         };
 
-        // successfully return the response 
-
+        // Return success response with cookies
         return res
             .status(200)
-            .cookie("AccessToken", accessToken, options)
-            .cookie("RefreshToken", refreshToken, options)
+            .cookie("AccessToken", accessToken, cookieOptions)
+            .cookie("RefreshToken", refreshToken, cookieOptions)
             .json({
                 success: true,
                 data: loggedInUser.email,
                 message: "User logged in successfully",
-
             });
 
-    }
-
-    catch (error) {
-
-        console.log(error);
+    } catch (error) {
+        console.error(error);
 
         return res.status(500).json({
-
             success: false,
             data: null,
-            message: "error while creating the sign up ",
+            message: "Error during login",
             error: error.message,
-
-        })
+        });
     }
-}
+};
+
 
 
 
@@ -549,55 +507,57 @@ exports.logIn = async (req, res) => {
 
 
 exports.logOut = async (req, res) => {
-
     try {
-
-        const userId = req.user._id;
+        const userId = req.user?._id;
 
         if (!userId) {
-
             return res.status(400).json({
-
                 success: false,
                 data: null,
-                message: "user id not found  ",
-
-            })
-
+                message: "User ID not found.",
+            });
         }
 
         const findUser = await User.findByIdAndUpdate(userId, {
-
+            accessToken: undefined,
             refreshToken: undefined,
-
         }, { new: true });
 
-        return res.status(201).clearCookie("AccessToken", options).clearCookie("RefreshToken", options).json({
+        if (!findUser) {
+            return res.status(404).json({
+                success: false,
+                data: null,
+                message: "User not found.",
+            });
+        }
 
-            success: true,
-            data: findUser,
-            message: "user logout successfully ",
+        const cookieOptions = {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production", // ensure secure cookies in production
+            sameSite: "Strict",
+            // Add any other cookie options here if necessary
+        };
 
-        })
+        return res.status(200)
+            .clearCookie("AccessToken", cookieOptions)
+            .clearCookie("RefreshToken", cookieOptions)
+            .json({
+                success: true,
+                data: findUser,
+                message: "User logged out successfully.",
+            });
+    } catch (error) {
+        console.error(error);
 
-
-    }
-
-    catch (error) {
-
-        console.log(error);
-
-        return res.status(400).json({
-
+        return res.status(500).json({
             success: false,
             data: null,
-            message: "error while log out ",
-            error: error.message
-
-        })
-
+            message: "Error while logging out.",
+            error: error.message,
+        });
     }
-}
+};
+
 
 
 
