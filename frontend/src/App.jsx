@@ -12,12 +12,10 @@ import Temp from './pages/Temp';
 import SearchUser from './pages/messages/SearchUser';
 import ChatPage from './pages/messages/ChatPage';
 import Notification from './pages/notification/Notification';
-import SideFeatureContainer from './components/common/SideFeatureContainer';
-import SearchBarContainer from './constant/SearchBarContainer';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ProtectedRoute from './utils/ProtectedRoute';
-
+import PublicRoute from './utils/PublicRoute';
 
 function App() {
   return (
@@ -28,29 +26,25 @@ function App() {
           {/* Public Routes */}
           <Route path='/' element={<LandingPage />} />
           <Route path='/auth'>
-            <Route path='auth-signup' element={<SignUp />} />
-            <Route path='auth-login' element={<Login />} />
-            <Route path='auth-forgotPassword' element={<ForgotPassword />} />
-            <Route path='auth-otpVerificationForm' element={<OtpVerificationForm />} />
-            <Route path='auth-ForgotChangePassword' element={<ForgotChangePassword />} />
+            <Route path='auth-signup' element={<PublicRoute><SignUp /></PublicRoute>} />
+            <Route path='auth-login' element={<PublicRoute><Login /></PublicRoute>} />
+            <Route path='auth-forgotPassword' element={<PublicRoute><ForgotPassword /></PublicRoute>} />
+            <Route path='auth-otpVerificationForm' element={<PublicRoute><OtpVerificationForm /></PublicRoute>} />
+            <Route path='auth-ForgotChangePassword' element={<PublicRoute><ForgotChangePassword /></PublicRoute>} />
           </Route>
 
           {/* Protected Routes */}
-          <Route element={<ProtectedRoute />}>
-            <Route path='/Notification' element={<Notification />} />
-            <Route path='/temp' element={<Temp />} />
-            <Route path='/homepage' element={<HomePage />} />
-            <Route path='/profile/:name' element={<Profile />} />
-            <Route path='/editProfile' element={<EditProfile />} />
-            <Route path='/messages' element={<SearchUser />} />
-            <Route path='/chatPage' element={<ChatPage />} />
-          </Route>
+          <Route path='/homepage' element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+          <Route path='/notification' element={<ProtectedRoute><Notification /></ProtectedRoute>} />
+          <Route path='/temp' element={<ProtectedRoute><Temp /></ProtectedRoute>} />
+          <Route path='/profile/:name' element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path='/editProfile' element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
+          <Route path='/messages' element={<ProtectedRoute><SearchUser /></ProtectedRoute>} />
+          <Route path='/chatPage' element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
         </Routes>
-
       </div>
     </div>
   );
 }
 
 export default App;
-

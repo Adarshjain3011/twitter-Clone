@@ -13,6 +13,7 @@ import Button from './Button';
 import AuthServices from '../../services/AuthService';
 
 const SideFeatureContainer = () => {
+    
     const SideFeatures = useSideFeatures();
     const dispatch = useDispatch();
     const authData = useSelector((state) => state.auth.data);
@@ -32,6 +33,7 @@ const SideFeatureContainer = () => {
     };
 
     return (
+
         <div className=' min-h-screen'>
             <div className='flex relative h-[95%] flex-col gap-8 justify-between mt-3'>
                 
