@@ -38,7 +38,6 @@ const Profile = () => {
 
     const [originalUserData, setOriginalUserData] = useState([]);
 
-    // const [newAuthData, setAuthData] = useState((authData?.data)?.data);
     
     const [newAuthData, setAuthData] = useState([]);
 
@@ -69,6 +68,7 @@ const Profile = () => {
     const month = timestamp.toLocaleString('en-US', { month: 'long' });
 
     const year = timestamp.getFullYear();
+
     // console.log("month ",timestamp.getFullYear());
 
     console.log("location  is ", location.pathname.replace("%20", " "));
@@ -135,6 +135,12 @@ const Profile = () => {
         }
     }
 
+
+    function removePercent20(str) {
+
+        return str.replace(/%20/g, ' ');
+
+      }
     
 
 
@@ -150,11 +156,6 @@ const Profile = () => {
             console.log("response ka data hai ",response.data.data);
 
             setAuthData(response.data.data);
-
-
-            // console.log("user profile data ", userProfileData);
-
-
 
         }
         catch (error) {

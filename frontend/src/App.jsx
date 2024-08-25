@@ -17,6 +17,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import ProtectedRoute from './utils/ProtectedRoute';
 import PublicRoute from './utils/PublicRoute';
 
+import Layout from './Layout';
+
+
 function App() {
   return (
     <div className='min-h-screen w-screen bg-black flex justify-center'>
@@ -34,13 +37,22 @@ function App() {
           </Route>
 
           {/* Protected Routes */}
+          {/* Protected Routes */}
+
+          <Route element={<ProtectedRoute><Layout/></ProtectedRoute>} >
+
+
+            <Route path='notification' element={<ProtectedRoute><Notification /></ProtectedRoute>} />
+            <Route path='temp' element={<ProtectedRoute><Temp /></ProtectedRoute>} />
+            <Route path='/profile/:name' element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path='editProfile' element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
+            <Route path='messages' element={<ProtectedRoute><SearchUser /></ProtectedRoute>} />
+            <Route path='chatPage' element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
+
+          </Route>
+
           <Route path='/homepage' element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
-          <Route path='/notification' element={<ProtectedRoute><Notification /></ProtectedRoute>} />
-          <Route path='/temp' element={<ProtectedRoute><Temp /></ProtectedRoute>} />
-          <Route path='/profile/:name' element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-          <Route path='/editProfile' element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
-          <Route path='/messages' element={<ProtectedRoute><SearchUser /></ProtectedRoute>} />
-          <Route path='/chatPage' element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
+
         </Routes>
       </div>
     </div>

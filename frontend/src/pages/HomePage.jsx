@@ -10,6 +10,7 @@ import PostServices from '../services/PostService';
 
 import { useDispatch } from 'react-redux';
 import PostTopBar from './post/PostTopBar';
+import { Outlet } from 'react-router-dom';
 
 
 const HomePage = () => {
@@ -46,7 +47,6 @@ const HomePage = () => {
 
             </div>
 
-            
 
             <SearchBarContainer></SearchBarContainer>
 
