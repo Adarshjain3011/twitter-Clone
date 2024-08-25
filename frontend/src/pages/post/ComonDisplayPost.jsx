@@ -57,13 +57,7 @@ const CommonPostDisplay = ({fetchDataPost}) => {
 
     return (
         <div>
-            <ul >
-                {items.map((item, index) => (
-                    <li style={{height:'200px', border:'2px solid black', marginBottom : '10px'}} key={index}>{item.title}</li>
-                ))}
-            </ul>
-            {loading && <p>Loading...</p>}
-            {!hasmore  && <p>No More data ......</p>}
+            
         </div>
     )
 

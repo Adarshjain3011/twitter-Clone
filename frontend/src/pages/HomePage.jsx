@@ -8,7 +8,11 @@ import CommonDisplayPost from "./post/ComonDisplayPost";
 
 import PostServices from '../services/PostService';
 
+import { useDispatch } from 'react-redux';
+
 const HomePage = () => {
+
+    const dispatch = useDispatch();
 
     return (
 
@@ -20,7 +24,7 @@ const HomePage = () => {
 
             </div>
 
-            <div className=''>
+            <div className='w-[50%]'>
 
                 <CommonDisplayPost fetchDataPost={PostServices.getAllPosts}></CommonDisplayPost>
 
