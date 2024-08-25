@@ -4,7 +4,7 @@ const PostTopBar = () => {
     const [currentState, setCurrentState] = useState("for you");
 
     return (
-        <div className="bg-black w-[37%] flex border border-gray-700 h-16 justify-center items-center fixed top-0 z-10">
+        <div className="bg-black w-[36.8%] flex border border-gray-700 h-16 justify-center items-center fixed top-0 z-10">
             <div className="flex relative w-full cursor-pointer">
                 <div
                     className={`flex flex-col justify-center items-center text-white font-bold w-[50%] hover:bg-white/10 h-16 transition-all duration-700 ${currentState === "for you" ? "bg-white/10" : ""

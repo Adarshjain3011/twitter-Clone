@@ -9,11 +9,15 @@ import ImageCarousel from "../../components/common/ImageCarousel";
 
 import Loading from "../../components/common/Loading";
 
+import { useNavigate } from "react-router-dom";
+
 const CommonPostDisplay = ({ fetchDataPost }) => {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(0);
     const [hasMore, setHasMore] = useState(true);
+
+    const navigate = useNavigate();
 
     const fetchData = async () => {
         if (loading || !hasMore) return;
@@ -39,12 +43,13 @@ const CommonPostDisplay = ({ fetchDataPost }) => {
         setPage((prevPage) => prevPage + 1);
     };
 
+
     useEffect(() => {
         fetchData();
     }, []);
 
     return (
-        <div className="relative w-full border border-gray-700 text-white rounded-lg">
+        <div className="relative w-full border border-gray-700 text-white rounded-lg mt-14">
 
             <InfiniteScroll
                 dataLength={items.length}
@@ -56,22 +61,26 @@ const CommonPostDisplay = ({ fetchDataPost }) => {
             >
                 {items.map((data, index) => (
                     <div key={index} className="flex flex-col border border-gray-700 items-start space-x-4 p-4">
-                        <div className="flex gap-4">
+                        <div className="flex gap-4" onClick={()=>{
+                            
+                            navigate(`/profile/${data.name}`);
+
+                        }}>
                             <img
                                 src={data?.user?.userImage}
                                 alt={data?.user?.name || "User"}
-                                className="h-12 w-12 rounded-full"
+                                className="h-8 w-8 rounded-full md:h-12 md:w-12"
                             />
                             <div>
 
                                 <div className="flex items-center space-x-2">
-                                    <span className="font-bold text-white">{data?.user?.name}</span>
-                                    <span className="text-gray-400">@{data?.user?.name} · {formatDate(data?.createdAt)}</span>
+                                    <span className="font-bold text-white text-xs md:text-xl text-nowrap">{data?.user?.name}</span>
+                                    <span className="text-gray-400 text-[8px] md:text-lg">@{data?.user?.name} · {formatDate(data?.createdAt)}</span>
                                 </div>
 
                                 {
 
-                                    data?.postUrl?.length > 0 && <div className="mt-3 w-full bg-cover border border-gray-700 rounded-2xl shadow-2xl p-5">
+                                    data?.postUrl?.length > 0 && <div className="mt-3 w-full bg-cover border border-gray-700 rounded-2xl p-3 shadow-2xl">
 
                                         <ImageCarousel images={data?.postUrl}></ImageCarousel>
 
@@ -91,7 +100,7 @@ const CommonPostDisplay = ({ fetchDataPost }) => {
                                 )}
                             </div>
                         </div>
-                        <div>
+                        <div className="pl-12 py-4 ">
                             <PostBottomSection
                                 likeCount={data?.likes?.length}
                                 commentCount={data?.comments?.length}

@@ -77,7 +77,7 @@ const SearchBarContainer = () => {
 
     return (
 
-        <div className='w-[600px] mt-2'>
+        <div className='hidden lg:block mt-2'>
 
 
             <ComboBox></ComboBox>

@@ -28,13 +28,13 @@ const HomePage = () => {
 
             <div className=' relative w-[67.4%] flex flex-col'>
 
-                <div className='relative w-full'>
+                <div className=''>
 
                     <PostTopBar></PostTopBar>
 
                 </div>
 
-                <div className='relative w-full mt-16'>
+                <div className='relative w-full'>
 
                     <CommonPostDisplay fetchDataPost={PostServices.getAllPosts}></CommonPostDisplay>
 
@@ -42,7 +42,9 @@ const HomePage = () => {
 
             </div>
 
-            <SearchBarContainer></SearchBarContainer>
+
+                <SearchBarContainer></SearchBarContainer>
+
 
         </div>
     )

@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 
 import {Carousel,CarouselContent,CarouselItem} from "../../components/ui/carousel";
 
-function ImageCarousel({ images }) {
+
+
+function ImageCarousel({ images}) {
   const [api, setApi] = useState(null);
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
