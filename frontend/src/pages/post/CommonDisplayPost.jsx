@@ -3,7 +3,11 @@ import PostServices from "../../services/PostService";
 import PostBottomSection from "./PostBottomSection";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-import {formatDate} from "../../utils/formatDate";
+import { formatDate } from "../../utils/formatDate";
+
+import ImageCarousel from "../../components/common/ImageCarousel";
+
+import Loading from "../../components/common/Loading";
 
 const CommonPostDisplay = ({ fetchDataPost }) => {
     const [items, setItems] = useState([]);
@@ -46,7 +50,7 @@ const CommonPostDisplay = ({ fetchDataPost }) => {
                 dataLength={items.length}
                 next={fetchData}
                 hasMore={hasMore}
-                loader={<p className="text-center text-gray-400">Loading...</p>}
+                loader={<Loading></Loading>}
                 endMessage={<p className="text-center text-gray-400">No more posts</p>}
                 scrollableTarget="scrollableDiv"
             >
@@ -59,13 +63,23 @@ const CommonPostDisplay = ({ fetchDataPost }) => {
                                 className="h-12 w-12 rounded-full"
                             />
                             <div>
+
                                 <div className="flex items-center space-x-2">
                                     <span className="font-bold text-white">{data?.user?.name}</span>
                                     <span className="text-gray-400">@{data?.user?.name} · {formatDate(data?.createdAt)}</span>
                                 </div>
-                                <p className="mt-1 text-white">
-                                    {data?.content || "Post content"}
-                                </p>
+
+                                {
+
+                                    data?.postUrl?.length > 0 && <div className="mt-3 w-full bg-cover border border-gray-700 rounded-2xl shadow-2xl p-5">
+
+                                        <ImageCarousel images={data?.postUrl}></ImageCarousel>
+
+                                    </div>
+
+                                }
+
+
                                 {data?.image && (
                                     <div className="mt-3">
                                         <img
