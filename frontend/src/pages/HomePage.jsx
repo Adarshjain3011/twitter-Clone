@@ -4,11 +4,11 @@ import SideFeatureContainer from '../components/common/SideFeatureContainer';
 
 import SearchBarContainer from '@/constant/SearchBarContainer';
 
-import DisplayAllUserPosts from './post/DisplayAllUserPosts';
-import DisplayAllPost from './post/DisplayAllPost';
+import CommonDisplayPost from "./post/ComonDisplayPost";
+
+import PostServices from '../services/PostService';
 
 const HomePage = () => {
-
 
     return (
 
@@ -20,12 +20,9 @@ const HomePage = () => {
 
             </div>
 
-
-            {/* <DisplayAllUserPosts></DisplayAllUserPosts> */}
-
             <div className=''>
 
-                <DisplayAllPost></DisplayAllPost>
+                <CommonDisplayPost fetchDataPost={PostServices.getAllPosts}></CommonDisplayPost>
 
             </div>
 

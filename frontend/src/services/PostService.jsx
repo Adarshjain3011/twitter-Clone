@@ -30,8 +30,6 @@ const getUserLikedPosts = async(data,index)=>{
 
 const getAllPosts = async(index)=>{
 
-    console.log("index value ",Object.values(index)[0]);
-
     console.log("value of index ",index);
 
     return fileUploadData.get(`/getAllPosts?index =${index}`);
