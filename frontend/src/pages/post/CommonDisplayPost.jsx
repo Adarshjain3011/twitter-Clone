@@ -63,7 +63,7 @@ const CommonPostDisplay = ({ fetchDataPost }) => {
                     <div key={index} className="flex flex-col border border-gray-700 items-start space-x-4 p-4">
                         <div className="flex gap-4" onClick={()=>{
                             
-                            navigate(`/profile/${data.name}`);
+                            navigate(`/profile/${data?.user?.name}`);
 
                         }}>
                             <img

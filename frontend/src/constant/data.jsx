@@ -1,14 +1,22 @@
 import { MdHomeFilled } from "react-icons/md";
 import { FiSearch } from "react-icons/fi";
-import { IoNotifications } from "react-icons/io5";
-import { IoMailOutline } from "react-icons/io5";
+import { IoNotifications, IoMailOutline } from "react-icons/io5";
 import { FiUsers } from "react-icons/fi";
 import { FaRegUser } from "react-icons/fa6";
-import { TbSquareForbid } from "react-icons/tb";
-import { TbDotsCircleHorizontal } from "react-icons/tb";
+import { TbSquareForbid, TbDotsCircleHorizontal } from "react-icons/tb";
 import { useNavigate } from 'react-router-dom';
 
+import { useSelector, useDispatch } from 'react-redux';
+
+
 export const useSideFeatures = () => {
+
+    
+    const dispatch = useDispatch();
+    const authData = useSelector((state) => state.auth.data);
+    
+    console.log("auth data at hompage", authData);
+
     const navigate = useNavigate();
 
     return [
@@ -19,9 +27,8 @@ export const useSideFeatures = () => {
         { title: "Grok", icon: <TbSquareForbid /> },
         { title: "List", icon: <MdHomeFilled /> },
         { title: "Communities", icon: <FiUsers /> },
-        { title: "Profile", icon: <FaRegUser />, onClick: () => navigate("/profile") },
+        { title: "Profile", icon: <FaRegUser />, onClick: () => navigate(`/profile/${authData.name}`) }, // Replace 'your-profile-name' with the actual profile name
         { title: "More", icon: <TbDotsCircleHorizontal /> }
     ];
 };
-
 

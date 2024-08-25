@@ -25,7 +25,7 @@ const SideFeatureContainer = () => {
     console.log("auth data at hompage", authData);
 
     const moveToProfileContainer = () => {
-        navigate(`/profile/${(authData?.data)?.data?.name}`);
+        navigate(`/profile/${authData.name}`);
     };
 
     const userLogout = async () => {

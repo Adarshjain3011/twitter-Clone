@@ -20,11 +20,15 @@ const HomePage = () => {
 
         <div className='bg-black w-screen min-h-screen flex justify-between gap-8 '>
 
+            {/* first  */}
+
             <div className='w-[30%]'>
 
                 <SideFeatureContainer></SideFeatureContainer>
 
             </div>
+
+            {/* second  */}
 
             <div className=' relative w-[67.4%] flex flex-col'>
 
@@ -42,8 +46,9 @@ const HomePage = () => {
 
             </div>
 
+            
 
-                <SearchBarContainer></SearchBarContainer>
+            <SearchBarContainer></SearchBarContainer>
 
 
         </div>
