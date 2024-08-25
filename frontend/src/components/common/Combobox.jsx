@@ -1,100 +1,102 @@
 import React, { useState } from 'react';
-import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
 import { AiOutlineSearch } from 'react-icons/ai';
-
+import { RxCrossCircled } from 'react-icons/rx';
 import PostServices from '../../services/PostService';
 
 const ComboBox = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [isOpen, setIsOpen] = useState(false);
-    const [searchResults, setSearchResults] = useState([{
-
-        id: 1,
-        name: "Sander Berge",
-        type: "Trending",
-        profileImage: "https://example.com/profile_image_1.jpg",
-        verified: true,
-
-    }]); // State to hold search results
-    const [loading, setLoading] = useState(false);
+    const [searchResultData, setSearchResultData] = useState(null);
 
     const handleInputChange = async (e) => {
-        const query = e.target.value;
 
         setSearchTerm(e.target.value);
-        setIsOpen(true); 
+        setIsOpen(true);
+
+        if (e.target.value === '') {
+
+            setSearchTerm('');
+            setIsOpen(false);
+            return;
+        }
+
+
         try {
-            console.log(query);
-            let response = await PostServices.findUser(query);
-            setSearchResults(response.data);
+            let response = await PostServices.findUser(e.target.value);
+            console.log("searched Query data ", response.data.data);
+            setSearchResultData(response.data.data);
         } catch (error) {
             console.error("Error during API call:", error);
-            return [];
         }
     };
 
+    const clearSearch = () => {
+        setSearchTerm('');
+        setIsOpen(false);
+        setSearchResultData(null);
+    };
+
     return (
-        <Popover open={isOpen} onOpenChange={setIsOpen}>
-            <PopoverTrigger className='rounded-full'>
-                <div className="relative">
-                    <input
-                        type="text"
-                        placeholder="Search the user by name"
-                        name="name"
-                        className="p-2 pl-10 outline-none rounded-full border bg-[#202327] font-semibold text-2xl"
-                        onChange={handleInputChange}
-                        onFocus={() => setIsOpen(true)}
+        <div className="relative">
+
+
+            <div className='w-full relative'>
+
+                <input
+                    type="text"
+                    placeholder="Search the user by name"
+                    name="name"
+                    className={`w-[400px] py-3 pl-12 outline-none rounded-full border ${!isOpen ? "bg-[#202327]" : "bg-black border-blue-500"} font-semibold text-xl`}
+                    onChange={handleInputChange}
+                    value={searchTerm}
+                    onClick={() => setIsOpen(true)}
+                />
+                <AiOutlineSearch className="text-gray-500 absolute left-2 top-3" size={30} />
+                {isOpen && searchTerm?.length > 0 && (
+                    <RxCrossCircled
+                        onClick={clearSearch}
+                        className="text-blue-500 absolute top-2 right-[12%] cursor-pointer"
+                        size={30}
                     />
-                    <AiOutlineSearch className="absolute left-3 top-2/4 transform -translate-y-2/4 text-gray-500" size={25} />
-                </div>
-            </PopoverTrigger>
-            <PopoverContent className="w-full p-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg">
-                <ul className="max-h-60 overflow-y-auto">
-                    {searchResults ? (
+                )}
 
-                        searchResults.map((item) => (
-                            <li
-                                key={item.id}
-                                className="flex items-center p-2 hover:bg-gray-100 transition-colors duration-150 ease-in-out cursor-pointer"
-                            >
-                                {item.avatar && (
-                                    <img
-                                        src={item.avatar}
-                                        alt={item.name}
-                                        className="w-8 h-8 rounded-full mr-3"
-                                    />
-                                )}
-                                <div className="flex-grow">
-                                    <div className="text-sm font-semibold text-gray-900">{item.name}</div>
-                                    {item.type && (
-                                        <div className="text-xs text-gray-500">{item.type}</div>
-                                    )}
-                                </div>
-                            </li>
-                        ))
+            </div>
 
-                    ) : (
 
-                        <div className='text-white'>search data to find </div>
-                    )
-                    }
+            <div className=''>
+                {isOpen && (
+                    <div className=' w-[400px] max-h-[300px] overflow-y-auto min-h-24 border-[2px] flex  border-white/[0.2] shadow-white/[0.2] rounded-xl bg-black shadow-2xl'>
+                        {searchResultData && searchResultData.length > 0 ? (
+                            <div className="flex flex-col w-full justify-center items-center relative p-2">
+                                {searchResultData.map((data, index) => (
 
-                </ul>
-            </PopoverContent>
-        </Popover>
+                                    <div className='flex gap-7 relative w-full items-center p-2 rounded-xl hover:bg-blue-700'>
+
+                                        <div className='w-[40px] h-[40px] rounded-full'>
+
+                                            <img src={data?.userImage} alt="" className='w-full h-full bg-cover rounded-full' />
+
+                                        </div>
+
+                                        <p key={index} className="text-white text-center">
+                                            {data?.name}
+                                        </p>
+
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className='flex relative w-full justify-center items-center'>
+
+                                <p className='text-center'>Try searching for people, lists, or keywords  </p>
+
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
+        </div>
     );
 };
 
 export default ComboBox;
-
-async function changeHandler(query) {
-    try {
-        console.log(query);
-        let response = await PostServices.findUser(query);
-        return response.data.data;
-    } catch (error) {
-        console.error("Error during API call:", error);
-        return [];
-    }
-}
-

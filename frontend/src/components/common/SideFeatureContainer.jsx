@@ -47,7 +47,8 @@ const SideFeatureContainer = () => {
 
     return (
 
-        <div className=' min-h-screen'>
+        <div className=' min-h-screen '>
+
             <div className='flex relative h-[95%] flex-col gap-8 justify-between mt-3'>
                 
                 <div className='flex relative flex-col'>

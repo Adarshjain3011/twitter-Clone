@@ -16,8 +16,8 @@ import ComboBox from '../components/common/Combobox';
 
 const SearchBarContainer = () => {
 
-    
-        const navigate = useNavigate();
+
+    const navigate = useNavigate();
 
     const { register, handleSubmit, formState: { errors } } = useForm();
 
@@ -46,10 +46,10 @@ const SearchBarContainer = () => {
 
             let response = await PostServices.findUser(event.target.value);
 
-            console.log(response.data.data);
+            console.log(response.data);
 
 
-            setSearchResult(response.data.data);
+            setSearchResult(response.data);
 
 
             setLoading(false);
@@ -65,41 +65,20 @@ const SearchBarContainer = () => {
     }
 
 
-    
 
-    function moveToUserProfile(name){
+
+    function moveToUserProfile(name) {
 
         navigate(`/profile/${name}`);
 
-
     }
 
-    
+
 
     return (
 
         <div className='w-full'>
 
-            {/* Serach bar  */}
-
-
-            {/* <form className='flex flex-col gap-10 fixed mt-3 z-20' onSubmit={handleSubmit(onSubmit)}>
-
-                <div className='flex justify-center items-center ' onClick={() => setClick(!click)}>
-
-                    <CiSearch className='text-xl absolute left-3'></CiSearch>
-
-                    <input type='text' placeholder='Search the user by name' name='name'
-
-                        {...register("name", { required: "name is required" })} className='w-[400px] p-2 pl-10 
-                            `rounded-md outline-none border rounded-full bg-[#202327] font-semibold
-                            text-2xl focus-within:border-blue-600' onChange={changeHandler}>
-
-                    </input>
-
-                </div>
-
-            </form> */}
 
             <ComboBox></ComboBox>
 
@@ -122,52 +101,6 @@ const SearchBarContainer = () => {
                     </button>
 
                 </div>
-{/* 
-                <div className='absolute top-0 bg-black w-full border-2 border-gray-800 rounded-xl max-h-[400px]'> */}
-
-                    {/* {
-                        click && (
-
-                            searchResult.length > 0 ? (
-                                // Render search results
-                                <div className='flex flex-col gap-4 mt-4 h-auto'>
-                                    {
-
-                                        searchResult.map((data) => (
-
-                                            <div className='flex gap-4 p-3 hover:bg-gray-800 rounded-xl' onClick={()=>moveToUserProfile(data.name)}>
-
-                                                <div className='w-[40px] h-[40px] rounded-full'>
-
-                                                    <img src={data.userImage} alt="" className='w-full h-full bg-cover rounded-full' />
-
-                                                </div>
-
-                                                <div className='flex flex-col gap-2'>
-
-                                                    <h1>{data.name}</h1>
-
-                                                    <p className='text-gray-500'>{data.email}</p>
-
-                                                </div>
-
-
-                                            </div>
-                                        ))
-                                    }
-                                </div>
-                            ) : (
-                                <div>
-
-                                    <Skeleton /> 
-                                    <Skeleton count={5} /> 
-
-                                </div>
-                            )
-                        )
-                    } */}
-
-                {/* </div> */}
 
             </div>
 

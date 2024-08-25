@@ -19,7 +19,7 @@ const LandingPage = () => {
 
                     <div className='flex flex-col'>
 
-                        <Button color="white" Icon={FaApple} link="/" bgColor="white" textColor="black">Sign up with Apple</Button>
+                        <Button color="white" Icon={FaApple} link="/" bgColor="white" textColor="white">Sign up with Apple</Button>
 
                         <div className='flex gap-3 items-center'>
                             <div className='bg-slate-800 w-[150px] h-[1px]'></div>

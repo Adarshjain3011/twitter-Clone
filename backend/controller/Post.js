@@ -1538,7 +1538,16 @@ exports.searchUser = async(req,res)=>{
         });
 
 
-        console.log(findUser);
+        if(findUser.length === 0){
+
+            return res.status(404).json({
+
+                success:false,
+                data:null,
+                message:"no user found  ",
+    
+            })
+        }
 
 
         return res.status(200).json({

@@ -32,7 +32,7 @@ const SearchUser = () => {
 
             let response = await PostServices.findUser(event.target.value);
 
-            console.log(response.data.data);
+            console.log(response.data);
 
 
             setSearchResult(response.data.data);
@@ -58,9 +58,6 @@ const SearchUser = () => {
     }
 
 
-
-
-
     async function findAllUserWhichFollowedEachOther() {
 
         try {
@@ -83,10 +80,6 @@ const SearchUser = () => {
 
 
 
-
-
-
-
     function moveToChatPageHandler(image,name,email,id){
 
 
@@ -105,8 +98,6 @@ const SearchUser = () => {
     }
 
 
-
-
     function moveToUserProfileHandler(name) {
 
 
@@ -114,8 +105,6 @@ const SearchUser = () => {
 
 
     }
-
-
 
 
     useEffect(() => {
