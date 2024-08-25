@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import SideFeatureContainer from '../components/common/SideFeatureContainer' ;
+import SideFeatureContainer from '../components/common/SideFeatureContainer';
 
 import SearchBarContainer from '@/constant/SearchBarContainer';
 
@@ -12,13 +12,23 @@ const HomePage = () => {
 
     return (
 
-        <div className='bg-black w-full min-h-screen flex justify-between gap-8 '>
+        <div className='bg-black w-screen min-h-screen flex justify-between gap-8 '>
 
-            <SideFeatureContainer></SideFeatureContainer>
-            
+            <div className='w-[30%]'>
+
+                <SideFeatureContainer></SideFeatureContainer>
+
+            </div>
+
+
             {/* <DisplayAllUserPosts></DisplayAllUserPosts> */}
 
-            <DisplayAllPost></DisplayAllPost>
+            <div className=''>
+
+                <DisplayAllPost></DisplayAllPost>
+
+            </div>
+
 
             <SearchBarContainer></SearchBarContainer>
 
@@ -26,6 +36,6 @@ const HomePage = () => {
     )
 }
 
-export default HomePage ;
+export default HomePage;
 
 

@@ -1531,11 +1531,12 @@ exports.searchUser = async(req,res)=>{
 
         console.log(req.user._id);
 
-        const findUser = await User.find({
-
-            name: { $regex: name, $options: "i" }, // Case-insensitive regex search for name containing the substring
-
-        });
+        const findUser = await User.find(
+            {
+                name: { $regex: name, $options: "i" }, // Case-insensitive regex search for name containing the substring
+            },
+            "name email userImage" // Select only the name, email, and userImage fields
+        );
 
 
         if(findUser.length === 0){

@@ -77,14 +77,14 @@ const SearchBarContainer = () => {
 
     return (
 
-        <div className='w-full'>
+        <div className='w-[600px] mt-2'>
 
 
             <ComboBox></ComboBox>
 
-            <div className='relative'>
+            <div className='relative w-full'>
 
-                <div className='realtive flex flex-col mt-20 shadow-2xl bg-[#16181c] w-[400px] p-5 gap-3 rounded-lg '>
+                <div className='realtive flex flex-col mt-16 shadow-2xl border-2 border-white/[0.2] shadow-white/[0.2] rounded-xl bg-black p-4 gap-3 '>
 
                     <h1 className='font-extrabold text-2xl'>Subscribe to Premium</h1>
 

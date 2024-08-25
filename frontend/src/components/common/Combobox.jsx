@@ -37,16 +37,17 @@ const ComboBox = () => {
     };
 
     return (
-        <div className="relative">
+
+        <div className="relative w-full ">
 
 
-            <div className='w-full relative'>
+            <div className='w-[400px] z-50 fixed'>
 
                 <input
                     type="text"
                     placeholder="Search the user by name"
                     name="name"
-                    className={`w-[400px] py-3 pl-12 outline-none rounded-full border ${!isOpen ? "bg-[#202327]" : "bg-black border-blue-500"} font-semibold text-xl`}
+                    className={` relative w-full py-2 pl-12 outline-none rounded-full border ${!isOpen ? "bg-[#202327]" : "bg-black border-blue-500"} font-semibold text-xl`}
                     onChange={handleInputChange}
                     value={searchTerm}
                     onClick={() => setIsOpen(true)}
@@ -55,7 +56,7 @@ const ComboBox = () => {
                 {isOpen && searchTerm?.length > 0 && (
                     <RxCrossCircled
                         onClick={clearSearch}
-                        className="text-blue-500 absolute top-2 right-[12%] cursor-pointer"
+                        className="text-blue-500 absolute top-2 right-[2%] cursor-pointer"
                         size={30}
                     />
                 )}
@@ -63,9 +64,9 @@ const ComboBox = () => {
             </div>
 
 
-            <div className=''>
+            <div className='absolute top-16 z-50 w-full'>
                 {isOpen && (
-                    <div className=' w-[400px] max-h-[300px] overflow-y-auto min-h-24 border-[2px] flex  border-white/[0.2] shadow-white/[0.2] rounded-xl bg-black shadow-2xl'>
+                    <div className=' max-h-[300px] overflow-y-auto min-h-24 border-[2px] flex  border-white/[0.2] shadow-white/[0.2] rounded-xl bg-black shadow-2xl'>
                         {searchResultData && searchResultData.length > 0 ? (
                             <div className="flex flex-col w-full justify-center items-center relative p-2">
                                 {searchResultData.map((data, index) => (
