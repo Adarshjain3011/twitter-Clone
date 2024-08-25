@@ -19,7 +19,7 @@ import gif from "../../assets/gif.png";
 
 // import shedule from "../../assets/shedule.png"
 // import { FaLocationDot } from 'react-icons/fa6';
-import CreatePostTopBar from './CreatePostTopBar';
+import CreatePostTopBar from './PostTopBar';
 import ActualCreatePost from './ActualCreatePost';
 
 const CreatePost = () => {

@@ -1262,20 +1262,12 @@ exports.getAllPosts = async (req, res) => {
 
     try {
 
-        console.log("reach to the ");
-
-        // const userId = req.user._id || req.query.userId;
-
-        // const pageNumber = Number(Object.values(req.query)[0]);
 
         console.log("page number in getAll posts ", req.query);
 
         const pageNumber = Number(Object.values(req.query)[0]);
 
         console.log("page number value is ",pageNumber);
-
-        // console.log("page number is ", Object.values(req.query)[0]);
-
 
         const allPosts = await Post.find({}).populate([{ path: 'user', select : 'name email userImage' },
         ])

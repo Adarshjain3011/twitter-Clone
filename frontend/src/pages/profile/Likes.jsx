@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import { useDispatch, useSelector } from 'react-redux'
 
-import { displayAllUserPost } from "../../redux/slices/Post";
+// import { displayAllUserPost } from "../../redux/slices/Post";
 
 import PostServices from '../../services/PostService';
 import AuthServices from '../../services/AuthService';

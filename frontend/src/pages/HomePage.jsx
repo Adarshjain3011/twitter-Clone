@@ -4,11 +4,13 @@ import SideFeatureContainer from '../components/common/SideFeatureContainer';
 
 import SearchBarContainer from '@/constant/SearchBarContainer';
 
-import CommonDisplayPost from "./post/ComonDisplayPost";
+import CommonPostDisplay from "./post/CommonDisplayPost";
 
 import PostServices from '../services/PostService';
 
 import { useDispatch } from 'react-redux';
+import PostTopBar from './post/PostTopBar';
+
 
 const HomePage = () => {
 
@@ -24,12 +26,21 @@ const HomePage = () => {
 
             </div>
 
-            <div className='w-[50%]'>
+            <div className=' relative w-[67.4%] flex flex-col'>
 
-                <CommonDisplayPost fetchDataPost={PostServices.getAllPosts}></CommonDisplayPost>
+                <div className='relative w-full'>
+
+                    <PostTopBar></PostTopBar>
+
+                </div>
+
+                <div className='relative w-full mt-16'>
+
+                    <CommonPostDisplay fetchDataPost={PostServices.getAllPosts}></CommonPostDisplay>
+
+                </div>
 
             </div>
-
 
             <SearchBarContainer></SearchBarContainer>
 
